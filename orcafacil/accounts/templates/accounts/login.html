@@ -1,0 +1,23 @@
+{% extends "master.html" %}
+
+{% load static %}
+
+{% block title%} Login {% endblock%}
+
+{% block body %}
+
+<h2> OrçaFácil CRM</h2>
+
+<h1>Login</h1>
+<h6>Comece gratuitamente hoje mesmo</h6>
+
+<form action="" method="POST">
+
+  {% csrf_token %}
+
+ <input type="email" name="email" placeholder="Email" class="form-control" required>
+    <input type="password" name="password" placeholder="Senha" class="form-control" required>
+
+  <button type="submit" class="btn btn-outline-primary">Entrar</button>
+</form>
+{% endblock %}

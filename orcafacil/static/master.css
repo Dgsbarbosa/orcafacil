@@ -1,0 +1,23 @@
+*, body{
+    padding: 0;
+    margin: 0;
+}
+
+span{
+    color: rgb(17, 0, 255);
+}
+
+.alert {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.alert.hide {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+nav{
+    border: 1px solid red;
+    position: fixed;
+}
+

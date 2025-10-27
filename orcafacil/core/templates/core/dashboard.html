@@ -1,0 +1,66 @@
+{% extends "master.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'core/css/clients.css' %}">
+{% endblock %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block body %}
+<div class="div-dashboard">
+    
+    <section id="sidebar-dashboard">
+        <ul class="menu">
+            <li class="menu-item active" data-section="home">Dashboard</li>
+            <li class="menu-item" data-section="clients">Clientes</li>
+            <li class="menu-item" data-section="budgets">Orçamentos</li>
+            <li class="menu-item" data-section="profile">Minha Conta</li>
+            
+
+        </ul>
+    </section>
+
+    <section id="content-dashboard">
+        <!-- Conteúdo carregado via AJAX -->
+        <div id="content-area"></div>
+    </section>
+</div>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const menuItems = document.querySelectorAll('.menu-item');
+        const contentArea = document.getElementById('content-area');
+
+        // Função para carregar conteúdo via AJAX
+        function loadContent(section) {
+            fetch(`dashboard/${section}/`)
+                .then(response => response.json())
+                .then(data => {
+                    contentArea.innerHTML = data.html;
+                     if (section === 'clients') {
+                initClientsJS(); // função global para ligar eventos
+            }
+                });
+        }
+
+        // Carregar conteúdo inicial
+        loadContent('clients');
+
+        menuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                // Ativar item selecionado
+                menuItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+
+                // Carregar conteúdo
+                const section = item.getAttribute('data-section');
+                loadContent(section);
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,247 @@
+{% extends "master.html" %}
+{% load static %}
+{% block title%} Orça Fácil - Home{% endblock%}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'landing/css/home.css' %}">
+{% endblock%}
+
+{% block body %}
+
+
+
+<!--  -->
+<section id="home-top">
+
+    <h1>Crie e gerencie seu orçamentos com facilidade</h1>
+    <span>Sistema de gestão de orçamentos com cadastro de clientes e acompanhamento de status — ideal para prestadores
+        de serviço que desejam centralizar o controle de propostas e negociações. </span>
+
+    <a href="{% url 'accounts:register' %}"><button type="button" class="btn btn-primary">Criar Conta Grátis</button>
+        </a>
+    <a href="#home-plans"><button type="button" class="btn btn-outline-primary">Ver Planos</button>
+    </a>
+</section>
+
+
+<section id="home-examples">
+    <img src="{% static 'landing/images/model_pdf.png' %}" alt="modelos de pdf">
+</section>
+
+<section id="home-advantages">
+    <h1>Por que escolher a OrçaFácil?</h1>
+
+    <div class="cards-group">
+
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+
+            <div class="col">
+                <div class="card">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Dashboard</h5>
+                        <p class="card-text">Visualize todas as métricas importantes do seu negócio em um painel
+                            intuitivo.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Orçamentos em PDF</h5>
+                        <p class="card-text">Gere orçamentos profissionais em PDF com sua marca e envie para clientes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Gestão de Clientes</h5>
+                        <p class="card-text">Organize e acompanhe todos os seus clientes em um único lugar.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">100% Responsivo</h5>
+                        <p class="card-text">Acesse de qualquer dispositivo - computador, tablet ou celular.</p>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col">
+                <div class="card">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Rápido e Simples</h5>
+                        <p class="card-text">Interface limpa e fácil de usar. Comece a trabalhar em minutos.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Seguro e Confiável</h5>
+                        <p class="card-text">Seus dados protegidos com a melhor tecnologia de segurança.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</section>
+
+<section id="home-plans">
+
+    <h1>Escolha seu plano</h1>
+
+    <div class="card-group row row-cols-1 row-cols-md-2">
+
+        <div class="card col free-plan">
+            <div class="card-body">
+
+                <h6 class="card-subtitle mb-2 text-body-secondary">Free</h6>
+                <h5 class="card-title">R$ <span class="plans-price">0</span>/mês</h5>
+
+                <ul>
+                    <li class="check-list">Até 5 clientes</li>
+                    <li class="check-list">Até 10 orçamentos/mês</li>
+                    <li class="check-list">Dashboard básico com anúncios</li>
+                    <li class="check-list">PDF com marca d’água</li>
+                    <li class="x-list">Relatórios avançados</li>
+                    <li class="x-list">Suporte prioritário</li>
+                    <li class="x-list">Branding personalizado</li>
+                    <li class="x-list">Multiusuário (equipe)</li>
+                    <li class="x-list">Armazenamento de mídia expandido</li>
+
+                </ul>
+
+                <a href="#" class="card-link">
+                    <button type="button" class="btn btn-outline-primary">Comece Grátis</button>
+                </a>
+            </div>
+        </div>
+
+        <div class="card col pro-plan">
+            <div class="card-body">
+
+                <h6 class="card-subtitle mb-2 text-body-secondary">Pro</h6>
+                <h5 class="card-title">R$ <span class="plans-price">0</span>/mês</h5>
+
+                <ul>
+                    <li class="check-list">Até 100 clientes</li>
+                    <li class="check-list">Até 1.000 orçamentos/mês</li>
+                    <li class="check-list">Dashboard sem anúncios</li>
+                    <li class="check-list">PDF limpo (sem marca d’água)</li>
+                    <li class="x-list">Relatórios avançados</li>
+                    <li class="x-list">Suporte prioritário</li>
+                    <li class="x-list">Branding personalizado</li>
+                    <li class="x-list">Multiusuário (equipe)</li>
+                    <li class="check-list">Armazenamento de mídia até 250 MB</li>
+
+                </ul>
+
+                <a href="#" class="card-link">
+                    <button type="button" class="btn btn-outline-primary">Comece Grátis</button>
+                </a>
+            </div>
+        </div>
+
+        <div class="card col master-plan">
+            <div class="card-body">
+
+                <h6 class="card-subtitle mb-2 text-body-secondary">Master</h6>
+                <h5 class="card-title">R$ <span class="plans-price">0</span>/mês</h5>
+
+                <ul>
+                    <li class="check-list">Clientes ilimitados</li>
+                    <li class="check-list">Orçamentos ilimitados</li>
+                    <li class="check-list">Dashboard completo e sem anúncios</li>
+                    <li class="check-list">PDF limpo com branding personalizado</li>
+                    <li class="check-list">Relatórios avançados e exportação CSV</li>
+                    <li class="check-list">Suporte prioritário</li>
+                    <li class="check-list">Multiusuário (equipe)</li>
+                    <li class="check-list">Armazenamento de mídia até 1 GB</li>
+
+
+                </ul>
+
+                <a href="#" class="card-link">
+                    <button type="button" class="btn btn-outline-primary">Comece Grátis</button>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<section id="call-action">
+    <div>
+        <h1>Pronto para começar?</h1>
+
+        <h6>Gestão de clientes e orçamentos simplificada — comece grátis!</h6>
+
+        <button type="button" class="btn btn-primary">Criar conta grátis</button>
+    </div>
+
+</section>
+
+
+<section id="advertising-space">
+    <h1>espaço publicitario 728x90</h1>
+</section>
+
+
+<section id="footer">
+    <div class="row">
+
+        <div class="col-md-6">
+            <h1>OrçaFácil</h1>
+            <span>Sistema de getão de orçamentos e clientes</span>
+        </div>
+
+        <div class="col-md-6">
+            <h1>Produto</h1>
+            <ul>
+                <a href="#home-advantages">
+                    <li>Vantagens</li>
+                </a>
+                <a href="#home-plans">
+                    <li>Planos</li>
+                </a>
+                <a href="">
+                    <li>Login</li>
+                </a>
+            </ul>
+        </div>
+
+        <div class="col-md-6">
+            <h1>Legal</h1>
+            <a href="">Termos de Uso</a>
+            <br>
+            <a href="">Política de Privacidade</a>
+
+        </div>
+
+        <div class="col-md-6">
+            <h1>Contato</h1>
+
+            <a href="mailto:">email@email.com</a>
+
+        </div>
+    </div>
+</section>
+{% endblock%}

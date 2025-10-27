@@ -1,0 +1,14 @@
+from django.urls import path
+
+from . import views
+
+app_name = 'core'
+
+urlpatterns = [
+    path('', views.dashboard, name='dashboard'),
+    path('dashboard/<str:section>/', views.dashboard_content, name='dashboard_content'),
+    path('clients/', views.client_list, name='client_list'),
+    path('clients/new/', views.client_create, name='client_create'),
+    path('budgets/', views.budget_list, name='budget_list'),
+    path('budgets/new/', views.budget_create, name='budget_create'),
+]

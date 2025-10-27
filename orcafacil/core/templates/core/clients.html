@@ -1,0 +1,51 @@
+<h2>Clientes</h2>
+<p>Gerencie seus clientes!</p>
+
+<button type="button" class="btn btn-outline-primary">Novo Cliente</button>
+
+<div class="search-clients">
+    <h3>Pesquisa Clientes</h3>
+    <input type="text" id="input-search-clients" placeholder="Digite o nome do cliente">
+    <select id="filter-status">
+        <option value="">Todos</option>
+        <option value="pendente">Pendente</option>
+        <option value="aprovado">Aprovado</option>
+        <option value="recusado">Recusado</option>
+    </select>
+    <button id="btn-filter">Filtrar</button>
+</div>
+
+
+
+
+
+<div id="clients-table"></div>
+
+<script>
+    const tableDiv = document.getElementById('clients-table');
+    const searchInput = document.getElementById('input-search-clients');
+    const statusSelect = document.getElementById('filter-status');
+    const btnFilter = document.getElementById('btn-filter');
+
+    function loadClients() {
+        const search = searchInput.value;
+        const status = statusSelect.value;
+
+        fetch(`/core/clients/?search=${encodeURIComponent(search)}&status=${encodeURIComponent(status)}`, {
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+        })
+        .then(res => res.json())
+        .then(data => {
+            tableDiv.innerHTML = data.html;
+        });
+    }
+
+    // Carrega lista inicial
+    loadClients();
+
+    // Busca enquanto digita
+    searchInput.addEventListener('input', loadClients);
+
+    // Filtra ao clicar
+    btnFilter.addEventListener('click', loadClients);
+</script>

@@ -1,0 +1,126 @@
+{% load currency %}
+<h2>Dashboard</h2>
+<p>Bem vindo <span>{{ user.first_name }} {{ user.last_name }}!</span></p>
+
+<p>Visão geral do seu negócio </span></p>
+
+
+<section id="results-dashboard">
+  <h3 class="titles-dashboard">Resumo</h3>
+  <div class="container py-4">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+
+      <!-- CARD 1 -->
+      <div class="col">
+        <div class="card h-100 text-center shadow-sm">
+          <i class="fa-solid fa-users fa-2x mt-4 text-success"></i>
+          <div class="card-body">
+            <h5 class="card-title">Total de Clientes</h5>
+
+            <p class="card-text count-clients">
+              {{ count_clients}}
+            </p>
+          </div>
+
+          <div class="card-footer">
+            <small class="text-muted">+12% este mês</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 2 -->
+      <div class="col">
+        <div class="card h-100 text-center shadow-sm">
+          <i class="fa-solid fa-users fa-2x mt-4 text-success"></i>
+          <div class="card-body">
+            <h5 class="card-title">Orçamentos Criados</h5>
+            <p class="card-text count_budgets">
+              {{ count_budgets}}
+            </p>
+          </div>
+          <div class="card-footer">
+            <small class="text-muted">+8% este mês</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 3 -->
+      <div class="col">
+        <div class="card h-100 text-center shadow-sm">
+          <i class="fa-solid fa-file-invoice-dollar fa-2x mt-4 text-warning"></i>
+          <div class="card-body">
+            <h5 class="card-title">Orçamentos Pendentes</h5>
+            <p class="card-text count_budgets">
+              {{ count_pending_budgets }}
+            </p>
+
+          </div>
+          <div class="card-footer">
+            <small class="text-muted">Aguardando resposta</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 4 -->
+      <div class="col">
+        <div class="card h-100 text-center shadow-sm">
+          <i class="fa-solid fa-gear fa-2x mt-4 text-danger"></i>
+          <div class="card-body">
+            <h5 class="card-title">Taxa de aprovação</h5>
+            <p class="card-text">{{ pass_rate }}%</p>
+          </div>
+          <div class="card-footer">
+            <small class="text-muted">Atualizado há 5 min</small>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+</section>
+<hr>
+
+<div class="adsense"></div>
+
+<section id="budgets-dashboard">
+
+  <div class="top-budgets">
+
+    <h3 class="titles-budgets">Orçamentos Recentes</h3>
+    
+  </div>
+
+  <div class="table-budgets">
+    <table class="table table-hover align-middle text-center">
+  <thead class="table-light">
+    <tr>
+      <th>Cliente</th>
+      <th>Serviço</th>
+      <th>Valor</th>
+      <th>Status</th>
+      <th>Data</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    {% for budget in budgets %}
+    <tr>
+      <td>{{ budget.client }}</td>
+      <td>{{ budget.title }}</td>
+      <td>{{ budget.value|currency }}</td>
+      <td><span class="badge status-{{ budget.status }}">{{ budget.status }}</span></td>
+      <td>{{ budget.created_at|date:"j/m/Y " }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+  </div>
+
+  
+
+
+
+
+</section>
