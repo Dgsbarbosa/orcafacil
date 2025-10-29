@@ -1,0 +1,9 @@
+<form action="{% url 'core:client_create' %}" method="POST">
+
+    {% csrf_token %}
+
+    {{ form_client.as_table }}
+
+<button type="submit">enviar</button>
+
+</form>

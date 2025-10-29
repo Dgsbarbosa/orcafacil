@@ -4,14 +4,44 @@ from django.conf import settings
 
 from django.utils import timezone
 
-class Client(models.Model):
+
+class AddressMixin(models.Model):
+    street = models.CharField(max_length=255,verbose_name="Endereço")
+
+    number = models.CharField(max_length=20, verbose_name="Número", null=True, blank=True, default="s/n")
+    complement = models.CharField(max_length=150, null=True, blank=True, default="sem complemento")
+    neighborhood = models.CharField(max_length=100, verbose_name="Bairro", blank=True, null=True, default="Bairro não informado")
+    city = models.CharField(max_length=100, verbose_name="Cidade", blank=True, null=True, default="Cidade não informada")
+    state = models.CharField(max_length=100, verbose_name="Estado", blank=True, null=True, default="Estado não informado")
+    zipcode = models.CharField(max_length=15, verbose_name="CEP", blank=True, null=True, default="CEP não informado")
+
+    class Meta:
+        abstract = True
+        verbose_name = "Endereço"
+        verbose_name_plural = "Endereços"
+
+
+
+    def __str__(self):
+        
+        fomated_address = f" {self.street}, {self.number}, {self.complement}, {self.neighborhood}, {self.city}, {self.state}, {self.country}, {self.zipcode}"
+        return fomated_address
+
+    
+class Client(AddressMixin):
+
+    STATUS_CLIENT_CHOICES = [
+        ("inativo","Inativo"),
+        ("ativo","Ativo")
+    ]
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     lastname = models.CharField(max_length=100)
     phone = models.CharField(max_length=20, blank=True)
     email = models.EmailField(blank=True)
-    address = models.TextField(blank=True)
     obs = models.TextField(blank=True)
+
+    status = models.CharField(choices=STATUS_CLIENT_CHOICES, default="ativo")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -48,3 +78,5 @@ class Budget(models.Model):
 
     def __str__(self):
         return f"{self.code} - {self.title}"
+    
+

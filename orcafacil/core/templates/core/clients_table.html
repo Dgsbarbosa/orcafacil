@@ -1,10 +1,12 @@
-<table class="table table-striped mt-3">
-  <thead>
+<table class="table table-hover align-middle text-center">
+  <thead class="table-light">
     <tr>
       <th>Nome</th>
       <th>Telefone</th>
       <th>Email</th>
-      <th>Último Orçamento</th>
+      <th>Cidade</th>
+      <th>Status</th>
+      <th>Ações</th>
     </tr>
   </thead>
   <tbody>
@@ -13,15 +15,14 @@
         <td>{{ client.name }} {{ client.lastname }}</td>
         <td>{{ client.phone }}</td>
         <td>{{ client.email }}</td>
-        <td>
-          {% with last_budget=client.budget_set.all %}
-            {% if last_budget %}
-              {{ last_budget.code }} ({{ last_budget.status|capfirst }})
-            {% else %}
-              -
-            {% endif %}
-          {% endwith %}
+        <td>{{ client.city }} </td>
+
+        <td ><span class="status-{% if client.status == 'ativo' %}active{% else %}deactive{% endif %}">{{ client.status }}</span></td>
+        <td> 
+          <i class="fa-solid fa-pencil"></i> 
+          <i class="fa-solid fa-eye"></i>
         </td>
+
       </tr>
     {% empty %}
       <tr>

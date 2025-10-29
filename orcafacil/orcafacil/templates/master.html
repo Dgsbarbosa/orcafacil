@@ -115,6 +115,15 @@ function initClientsJS() {
 
 </script>
 
+<script src="{% static 'core/js/utils.js' %}" defer></script>
+<script src="{% static 'core/js/clients.js' %}" defer></script>
+<script src="{% static 'core/js/budgets.js' %}" defer></script>
+<script src="{% static 'core/js/dashboard.js' %}" defer></script>
+
+{% block js_extra%}
+{% endblock %}
+
+
 </body>
 
 </html>

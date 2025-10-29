@@ -30,37 +30,8 @@
 
 
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const menuItems = document.querySelectorAll('.menu-item');
-        const contentArea = document.getElementById('content-area');
 
-        // Função para carregar conteúdo via AJAX
-        function loadContent(section) {
-            fetch(`dashboard/${section}/`)
-                .then(response => response.json())
-                .then(data => {
-                    contentArea.innerHTML = data.html;
-                     if (section === 'clients') {
-                initClientsJS(); // função global para ligar eventos
-            }
-                });
-        }
 
-        // Carregar conteúdo inicial
-        loadContent('clients');
 
-        menuItems.forEach(item => {
-            item.addEventListener('click', () => {
-                // Ativar item selecionado
-                menuItems.forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
 
-                // Carregar conteúdo
-                const section = item.getAttribute('data-section');
-                loadContent(section);
-            });
-        });
-    });
-</script>
 {% endblock %}

@@ -1,10 +1,13 @@
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from .models import Budget, Client
+from .forms import ClientForm
 from .utils import count_budgets_per_month,pass_rate
 from django.template.loader import render_to_string
 from django.db.models import Q
+
+
 
 @login_required
 def dashboard(request):
@@ -59,6 +62,12 @@ def dashboard_content(request, section):
         # context['clients'] = 
 
         html = render(request, 'core/clients.html', context).content.decode('utf-8')
+        
+    elif section == 'client_form': 
+        form_client = ClientForm()
+        context['form_client'] = form_client
+        html = render(request, 'core/client_form.html', context).content.decode('utf-8')
+
     else:
         html = "<p>Seção não encontrada.</p>"
 
@@ -77,12 +86,19 @@ def client_list(request):
 
     # Filtra pelo termo
     if search:
-        clients = clients.filter(Q(name__icontains=search) | Q(lastname__icontains=search))
+        clients = clients.filter(
+            Q(name__icontains=search) |
+            Q(lastname__icontains=search) |
+            Q(email__icontains=search) |
+            Q(phone__icontains=search)
+        )
 
     # Filtra pelo status relacionado ao orçamento
     if status:
-        clients = clients.filter(budget__status=status).distinct()
-
+        clients = clients.filter(status=status).distinct()
+        
+        print(clients)
+        
     context = {'clients': clients}
     html = render(request, 'core/clients_table.html', context).content.decode('utf-8')
     return JsonResponse({'html': html})
@@ -90,7 +106,13 @@ def client_list(request):
 
 @login_required
 def client_create(request):
-    return render(request, 'core/client_form.html')
+
+    print("teste create new user",request)
+    
+    
+
+    return redirect("/core/")
+    
 
 @login_required
 def budget_list(request):

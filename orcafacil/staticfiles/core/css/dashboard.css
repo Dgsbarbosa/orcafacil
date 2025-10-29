@@ -1,3 +1,85 @@
-#sidebar-dashboard{
-    border: 1px solid black;
+
+/* Dashboard */
+.div-dashboard{
+    /* border: 1px solid black; */
+
+    display: flex;
+    height: 90vh;
+    
 }
+#sidebar-dashboard{
+    height: 90vh;
+}.div-dashboard {
+    display: flex;
+}
+
+#sidebar-dashboard {
+    width: 200px;
+    background-color: #2c3e50;
+    color: #fff;
+    padding: 20px;
+}
+
+#sidebar-dashboard ul {
+    list-style: none;
+    padding: 0;
+}
+
+#sidebar-dashboard li {
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#sidebar-dashboard li.active,
+#sidebar-dashboard li:hover {
+    background-color: #34495e;
+}
+
+#content-dashboard {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+
+.top-budgets-dashboard{
+    display: flex;
+
+}
+
+table, th, td{
+    border:  1px solid black;
+    
+}
+th{
+    text-align: center;
+}
+td{
+    padding: 10px 5px ;
+
+}
+
+.status-aprovado {
+    background-color: #e6f4ea; /* verde claro */
+    color: #137333; /* verde escuro */
+    font-weight: 500;
+    border-radius: 50px;
+    padding: 0.4em 0.8em;
+  }
+
+  .status-pendente {
+    background-color: #fff7e6; /* amarelo claro */
+    color: #b26a00; /* dourado escuro */
+    font-weight: 500;
+    border-radius: 50px;
+    padding: 0.4em 0.8em;
+  }
+
+  .status-recusado {
+    background-color: #fdecea; /* vermelho claro */
+    color: #a61b1b; /* vermelho escuro */
+    font-weight: 500;
+    border-radius: 50px;
+    padding: 0.4em 0.8em;
+  }
