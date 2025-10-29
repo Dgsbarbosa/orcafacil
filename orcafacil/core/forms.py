@@ -4,4 +4,4 @@ from .models import Client, Budget
 class ClientForm(ModelForm):
     class Meta:
         model = Client
-        fields = ['__all__']
+        fields = ['name', 'lastname','phone', 'email','street','number','complement',"neighborhood",'city','state', 'zipcode','obs']

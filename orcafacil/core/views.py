@@ -6,6 +6,7 @@ from .forms import ClientForm
 from .utils import count_budgets_per_month,pass_rate
 from django.template.loader import render_to_string
 from django.db.models import Q
+from django.contrib import messages
 
 
 
@@ -107,12 +108,25 @@ def client_list(request):
 @login_required
 def client_create(request):
 
-    print("teste create new user",request)
-    
-    
+    user = request.user
+    if request.method ==  "POST":
+
+        form = ClientForm(request.POST)
+        if form.is_valid():
+            client = form.save(commit=False)
+            client.user_id = user.id
+            
+            form.save()
+
+            messages.success(request, f"Cliente {client} adicionado com Sucesso")
+        
+
+        else:
+            messages.error(request, f"ERROR: {form.errors.as_text()}")
+
 
     return redirect("/core/")
-    
+
 
 @login_required
 def budget_list(request):

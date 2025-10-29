@@ -8,12 +8,12 @@ from django.utils import timezone
 class AddressMixin(models.Model):
     street = models.CharField(max_length=255,verbose_name="Endereço")
 
-    number = models.CharField(max_length=20, verbose_name="Número", null=True, blank=True, default="s/n")
-    complement = models.CharField(max_length=150, null=True, blank=True, default="sem complemento")
-    neighborhood = models.CharField(max_length=100, verbose_name="Bairro", blank=True, null=True, default="Bairro não informado")
-    city = models.CharField(max_length=100, verbose_name="Cidade", blank=True, null=True, default="Cidade não informada")
-    state = models.CharField(max_length=100, verbose_name="Estado", blank=True, null=True, default="Estado não informado")
-    zipcode = models.CharField(max_length=15, verbose_name="CEP", blank=True, null=True, default="CEP não informado")
+    number = models.CharField(max_length=20, verbose_name="Número", null=True, blank=True)
+    complement = models.CharField(max_length=150, null=True, blank=True, verbose_name='Complemento')
+    neighborhood = models.CharField(max_length=100, verbose_name="Bairro", blank=True, null=True)
+    city = models.CharField(max_length=100, verbose_name="Cidade", blank=True, null=True)
+    state = models.CharField(max_length=100, verbose_name="Estado", blank=True, null=True)
+    zipcode = models.CharField(max_length=15, verbose_name="CEP", blank=True, null=True)
 
     class Meta:
         abstract = True
@@ -35,11 +35,11 @@ class Client(AddressMixin):
         ("ativo","Ativo")
     ]
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
-    lastname = models.CharField(max_length=100)
-    phone = models.CharField(max_length=20, blank=True)
-    email = models.EmailField(blank=True)
-    obs = models.TextField(blank=True)
+    name = models.CharField(max_length=100,verbose_name="Nome")
+    lastname = models.CharField(max_length=100,verbose_name='Sobrenome')
+    phone = models.CharField(max_length=20, blank=True,verbose_name='Telefone')
+    email = models.EmailField(blank=True,verbose_name='Email', unique=True)
+    obs = models.TextField(blank=True,verbose_name='Observação')
 
     status = models.CharField(choices=STATUS_CLIENT_CHOICES, default="ativo")
     created_at = models.DateTimeField(auto_now_add=True)
