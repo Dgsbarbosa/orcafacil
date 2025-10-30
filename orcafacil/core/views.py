@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from django.shortcuts import render,redirect
+from django.shortcuts import get_object_or_404, render,redirect
 from django.contrib.auth.decorators import login_required
 from .models import Budget, Client
 from .forms import ClientForm
@@ -127,6 +127,38 @@ def client_create(request):
 
     return redirect("/core/")
 
+@login_required
+def client_view(request,client_id):
+
+
+    client = get_object_or_404(Client, pk=client_id)
+
+    context = {
+        'client': client,
+
+    }
+    html = render_to_string('core/client_view.html', 
+    context, request=request)
+    return JsonResponse({'html': html})
+
+@login_required
+def client_edit(request, client_id):
+    client = get_object_or_404(Client, pk=client_id)
+
+    if request.method == "POST":
+        form = ClientForm(request.POST, instance=client)
+        
+        print(form)
+        if form.is_valid():
+            # form.save() 
+            print("ok")
+        else:
+            print(form.errors)
+    else:
+        form = ClientForm(instance=client)
+
+    html = render_to_string('core/client_edit.html', {'form': form}, request=request)
+    return JsonResponse({'html': html})
 
 @login_required
 def budget_list(request):

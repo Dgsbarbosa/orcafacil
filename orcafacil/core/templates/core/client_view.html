@@ -1,0 +1,57 @@
+<div class="client-detail-container">
+    <header class="content-header">
+        <div>
+            <h1>Detalhes do Cliente</h1>
+            <p>Veja todas as informações cadastradas</p>
+        </div>
+
+    </header>
+
+    <div class="page-content">
+        <div class="client-info-card">
+            <h2>{{ client.name }} {{ client.lastname }}</h2>
+            <p><strong>Status:</strong>
+                <span class="status-{% if client.status == 'ativo' %}active{% else %}deactive{% endif %}">
+                    {{ client.status }}
+                </span>
+            </p>
+
+            <div class="info-grid">
+                <div><strong>Telefone:</strong> {{ client.phone }}</div>
+                <div><strong>E-mail:</strong> {{ client.email }}</div>
+                <div><strong>Endereço:</strong> {{ client.street }}</div>
+                <div><strong>Numero:</strong> {{ client.number }}</div>
+                <div><strong>Complemento:</strong> {{ client.complement }}</div>
+                <div><strong>Bairro:</strong> {{ client.neighborhood }}</div>
+
+
+
+                <div><strong>Cidade:</strong> {{ client.city }}</div>
+                <div><strong>Estado:</strong> {{ client.state }}</div>
+                <div><strong>CEP:</strong> {{ client.zipcode }}</div>
+
+
+            </div>
+
+            <hr>
+
+            <div class="extra-section">
+                <h3>Observações</h3>
+                <p>{{ client.obs|default:"Nenhuma observação cadastrada." }}</p>
+                <p class="text-muted">Criado em {{ client.created_at|date:"d/m/Y" }}</p>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-secondary" onclick="window.loadContent('home')">
+                    Voltar
+                </button>
+                <button class="btn btn-primary" onclick="window.loadContent('client/edit/{{ client.id }}')">
+                    Editar Cliente
+                </button>
+                <button class="btn btn-danger">
+                    Excluir
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
