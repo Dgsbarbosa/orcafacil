@@ -13,10 +13,12 @@ urlpatterns = [
     
     path('clients/new/', views.client_create, name='client_create'),
 
+    path('client/delete/<int:client_id>',views.delete_client,name='delete_client'),
+
     path('dashboard/client/view/<int:client_id>/',views.client_view,name='client_view'),
 
     path('dashboard/client/edit/<int:client_id>/',views.client_edit,name='client_edit'),
-
+    
 
     path('budgets/', views.budget_list, name='budget_list'),
     

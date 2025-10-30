@@ -22,7 +22,7 @@ def dashboard(request):
 def dashboard_content(request, section):
     """Retorna HTML parcial para cada seção"""
 
-    print(section)
+    
     context = {}
     user = request.user
 
@@ -173,6 +173,17 @@ def client_edit(request, client_id):
         }
     html = render_to_string('core/client_edit.html', context, request=request)
     return JsonResponse({'html': html})
+
+@login_required
+def delete_client(request, client_id):
+    if request.method == "POST":
+        client = get_object_or_404(Client, id=client_id)
+        try:
+            client.delete()
+            return JsonResponse({'success': True})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'Método inválido'})
 
 @login_required
 def budget_list(request):

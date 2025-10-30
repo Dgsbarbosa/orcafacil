@@ -41,14 +41,12 @@
                 <p class="text-muted">Criado em {{ client.created_at|date:"d/m/Y" }}</p>
             </div>
 
-            <div class="actions">
-                <button class="btn btn-secondary" onclick="window.loadContent('home')">
-                    Voltar
-                </button>
+            <div class="buttons-form">
+                <button type="button" class="btn btn-secondary" onclick="window.loadContent('clients', window.initClients)">Voltar</button>
                 <button class="btn btn-primary" onclick="window.loadContent('client/edit/{{ client.id }}')">
                     Editar Cliente
                 </button>
-                <button class="btn btn-danger">
+                <button class="btn btn-danger delete-client" data-client_id="{{ client.id }}">
                     Excluir
                 </button>
             </div>
