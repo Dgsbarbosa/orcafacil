@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render,redirect
 from django.contrib.auth.decorators import login_required
 from .models import Budget, Client
-from .forms import ClientForm
+from .forms import ClientForm, BudgetForm
 from .utils import count_budgets_per_month,pass_rate
 from django.template.loader import render_to_string
 from django.db.models import Q
@@ -70,6 +70,11 @@ def dashboard_content(request, section):
         context['form_client'] = form_client
         html = render(request, 'core/client_form.html', context).content.decode('utf-8')
 
+    elif section == "budget_form":
+        clients = Client.objects.filter(user_id = user)
+        budget_form = BudgetForm(user=user)
+        context['budget_form'] = budget_form
+        html = render(request, 'core/budget_form.html', context).content.decode('utf-8')
     else:
         html = "<p>Seção não encontrada.</p>"
 
@@ -186,9 +191,34 @@ def delete_client(request, client_id):
     return JsonResponse({'success': False, 'error': 'Método inválido'})
 
 @login_required
+def budgets(request):
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        search = request.GET.get('search', '')
+        status = request.GET.get('status', '')
+        budgets = Budget.objects.all()
+
+        if search:
+            budgets = budgets.filter(
+                Q(code__icontains=search) |
+                Q(client__name__icontains=search) |
+                Q(status__icontains=search) |
+                Q(created_at__icontains=search)
+                
+            )
+        if status:
+            budgets = budgets.filter(status__icontains=status)
+
+        html = render_to_string('core/budgets_table.html', {'budgets': budgets})
+        return JsonResponse({'html': html})
+    
+    html = render_to_string('core/budgets.html', {})
+    return JsonResponse({'html': html})
+
+@login_required
 def budget_list(request):
     return render(request, 'core/budget_list.html')
 
 @login_required
 def budget_create(request):
-    return render(request, 'core/budget_form.html')
+    print("teste")
+    return JsonResponse({"teste":"teste"})

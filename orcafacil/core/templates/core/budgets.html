@@ -1,2 +1,24 @@
-<h2>Orçamentos</h2>
-<p>Seus orçametos aqui.</p>
+<div class="top-budget">
+    <h2>Orçamentos</h2>
+    <p>Gerencie seus orçamentos!</p>
+
+    <button type="button" id="new-budget" class="btn btn-outline-primary">Novo Orçamento</button>
+</div>
+
+<div class="search-budgets">
+    <h3>Pesquisa de Orçamentos</h3>
+    <input type="text" id="input-search-budgets" class="form-control" placeholder="Buscar orçamentos por nome, cliente, status...">
+
+    <h6>Status</h6>
+    <select id="filter-status-budgets" class="form-control">
+        <option value="">Todos</option>
+        <option value="aprovado">Aprovado</option>
+        <option value="pendente">Pendente</option>
+        <option value="cancelado">Cancelado</option>
+        <option value="recusado">Recusado</option>
+        
+    </select>
+</div>
+
+
+<div id="budgets-table"></div>

@@ -1,0 +1,33 @@
+{% load currency %}
+<table class="table table-hover align-middle text-center">
+  <thead class="table-light">
+    <tr>
+      <th>Orçamento</th>
+      <th>Cliente</th>
+      <th>Valor</th>
+      <th>Status</th>
+      <th>Data</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for budget in budgets %}
+    <tr>
+      <td>{{ budget.code }}</td>
+      <td>{{ budget.client.name }}</td>
+      <td>{{ budget.value|currency }}</td>
+      <td><span class="status-{{ budget.status }}">{{ budget.status }}</span></td>
+      <td>{{ budget.created_at|date:"d/m/Y" }}</td>
+      <td>
+        <i class="fa-solid fa-pencil edit-budget" data-id="{{ budget.id }}"></i>
+        <i class="fa-solid fa-eye view-budget" data-id="{{ budget.id }}"></i>
+        <i class="fa-solid fa-x delete-budget" data-budget_id="{{ budget.id }}"></i>
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="6">Nenhum orçamento encontrado.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

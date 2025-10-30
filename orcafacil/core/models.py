@@ -67,7 +67,8 @@ class Budget(models.Model):
     STATUS_CHOICES = [
         ('pendente',"Pendente"),
         ('aprovado', 'Aprovado'),
-        ('recusado', 'Recusado')
+        ('recusado', 'Recusado'),
+        ('cancelado','Cancelado')
 
     ]
 

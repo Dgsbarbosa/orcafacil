@@ -20,7 +20,7 @@ urlpatterns = [
     path('dashboard/client/edit/<int:client_id>/',views.client_edit,name='client_edit'),
     
 
-    path('budgets/', views.budget_list, name='budget_list'),
+    path('budgets/', views.budgets, name='budget'),
     
     path('budgets/new/', views.budget_create, name='budget_create'),
 ]
