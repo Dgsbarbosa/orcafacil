@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
-
+from django import forms
 from django.utils import timezone
 
 
@@ -44,6 +44,22 @@ class Client(AddressMixin):
     status = models.CharField(choices=STATUS_CLIENT_CHOICES, default="ativo")
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if not email:
+            return email
+
+        # Verifica se existe outro cliente com o mesmo e-mail
+        qs = Client.objects.filter(email=email)
+
+        # Se estiver editando, exclui o próprio ID da busca
+        if self.instance and self.instance.pk:
+            qs = qs.exclude(pk=self.instance.pk)
+
+        if qs.exists():
+            raise forms.ValidationError("Este e-mail já está cadastrado para outro cliente.")
+
+        return email
     def __str__(self):
         return f'{self.name} {self.lastname} '
 

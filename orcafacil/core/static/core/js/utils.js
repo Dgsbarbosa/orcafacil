@@ -9,3 +9,5 @@ window.loadContent = function (section, callback = null) {
         })
         .catch(err => console.error("Erro ao carregar conteúdo:", err));
 };
+
+

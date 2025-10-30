@@ -4,6 +4,11 @@
 
     {{ form_client.as_p }}
 
-<button type="submit" class="btn btn-primary">enviar</button>
+    <div class="buttons-form">
+
+        <button type="button" class="btn btn-danger"
+            onclick="window.loadContent('clients', window.initClients)">Cancelar</button>
+        <button type="submit" class="btn btn-success">Enviar</button>
+    </div>
 
 </form>

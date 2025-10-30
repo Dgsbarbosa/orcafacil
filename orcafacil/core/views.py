@@ -9,7 +9,6 @@ from django.db.models import Q
 from django.contrib import messages
 
 
-
 @login_required
 def dashboard(request):
     user = request.user
@@ -22,6 +21,8 @@ def dashboard(request):
 @login_required
 def dashboard_content(request, section):
     """Retorna HTML parcial para cada seção"""
+
+    print(section)
     context = {}
     user = request.user
 
@@ -143,21 +144,34 @@ def client_view(request,client_id):
 
 @login_required
 def client_edit(request, client_id):
+    
     client = get_object_or_404(Client, pk=client_id)
+
+    
 
     if request.method == "POST":
         form = ClientForm(request.POST, instance=client)
         
-        print(form)
+        
         if form.is_valid():
-            # form.save() 
-            print("ok")
+            form.save() 
+            
+
+            messages.success(request,"Cliente atualizado com sucesso")
         else:
-            print(form.errors)
+            messages.error(request,f"{form.errors.as_text()}")
+            print(form.errors.as_text())
+        
+        return redirect('/core')
+
     else:
         form = ClientForm(instance=client)
-
-    html = render_to_string('core/client_edit.html', {'form': form}, request=request)
+    
+    context = {
+        'form': form,
+        'client_id':client_id
+        }
+    html = render_to_string('core/client_edit.html', context, request=request)
     return JsonResponse({'html': html})
 
 @login_required
