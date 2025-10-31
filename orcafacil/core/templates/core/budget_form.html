@@ -1,4 +1,25 @@
+<form action="{% url 'core:budget_create' %}" method="POST">
 
-Formulario de orçamento
+    {% csrf_token %}
 
-{{ budget_form }}
+   {{ budget_form.as_p }}
+
+    <h4 class="mt-4">Serviços</h4>
+
+    {{ services_form.management_form }}
+
+    <div id="services-forms">
+        <div class="card card-new-service p-3 mb-3">
+            {{ services_form.as_p }}
+        </div>
+    </div>
+
+    <button type="button" id="add-service" class="btn btn-outline-primary mb-3">Add Serviço</button>
+    <div class="buttons-form">
+
+        <button type="button" class="btn btn-danger"
+            onclick="window.loadContent('budgets', window.initBudgets)">Cancelar</button>
+        <button type="submit" class="btn btn-success">Enviar</button>
+    </div>
+
+</form>

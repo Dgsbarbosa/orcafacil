@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render,redirect
 from django.contrib.auth.decorators import login_required
 from .models import Budget, Client
-from .forms import ClientForm, BudgetForm
+from .forms import ClientForm, BudgetForm, ServiceFormSet
 from .utils import count_budgets_per_month,pass_rate
 from django.template.loader import render_to_string
 from django.db.models import Q
@@ -71,9 +71,20 @@ def dashboard_content(request, section):
         html = render(request, 'core/client_form.html', context).content.decode('utf-8')
 
     elif section == "budget_form":
-        clients = Client.objects.filter(user_id = user)
-        budget_form = BudgetForm(user=user)
+        clients = Client.objects.filter(user=request.user)
+
+        # 🔹 Passa o user para o form (caso o BudgetForm use ele para filtrar clientes)
+        budget_form = BudgetForm(user=request.user)
+
+        # 🔹 Formset de serviços (vários por orçamento)
+        formset = ServiceFormSet()
+
+        # 🔹 Adiciona no contexto
         context['budget_form'] = budget_form
+        context['services_form'] = formset
+        context['clients'] = clients
+
+        
         html = render(request, 'core/budget_form.html', context).content.decode('utf-8')
     else:
         html = "<p>Seção não encontrada.</p>"
@@ -220,5 +231,36 @@ def budget_list(request):
 
 @login_required
 def budget_create(request):
-    print("teste")
-    return JsonResponse({"teste":"teste"})
+
+    user = request.user
+
+    if request.method == "POST":
+        
+        form = BudgetForm(request.POST)
+        formset = ServiceFormSet(request.POST)
+
+        if form.is_valid() and formset.is_valid():
+            budget = form.save(commit=False)
+            
+            budget.user = user 
+
+            print("----------")
+
+            print(budget)
+            print("----------")
+
+            # budget.save()
+
+            services = formset.save(commit=False)
+
+            for s in services:
+                s.budget = budget
+                # s.save()
+                print("----------")
+
+                print(s)
+                print("----------")
+
+            # formset.save_m2m()
+
+    return redirect('/core')

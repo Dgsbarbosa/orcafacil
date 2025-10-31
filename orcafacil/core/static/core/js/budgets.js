@@ -1,3 +1,7 @@
+// ======================================================
+//  budgets.js — controle de CRUD e formulários dinâmicos
+// ======================================================
+
 // ---------------------------
 // Pega o CSRF token
 // ---------------------------
@@ -16,9 +20,9 @@ function getCookie(name) {
     return cookieValue;
 }
 
-// ---------------------------
-// Delegação global para excluir orçamento
-// ---------------------------
+// ======================================================
+// EXCLUSÃO DE ORÇAMENTO (delegação global)
+// ======================================================
 document.addEventListener('click', function (e) {
     const deleteBtn = e.target.closest('.delete-budget');
     if (!deleteBtn) return;
@@ -38,6 +42,7 @@ document.addEventListener('click', function (e) {
         .then(res => res.json())
         .then(data => {
             if (data.success) {
+                // Recarrega lista de orçamentos
                 window.loadContent('budgets', () => {
                     window.loadBudgets();
                 });
@@ -48,9 +53,9 @@ document.addEventListener('click', function (e) {
         .catch(err => console.error(err));
 });
 
-// ---------------------------
-// Delegação global para editar/visualizar orçamento
-// ---------------------------
+// ======================================================
+// EDIÇÃO / VISUALIZAÇÃO DE ORÇAMENTO
+// ======================================================
 document.addEventListener('click', function (e) {
     const editBtn = e.target.closest('.edit-budget');
     const viewBtn = e.target.closest('.view-budget');
@@ -66,9 +71,9 @@ document.addEventListener('click', function (e) {
     }
 });
 
-// ---------------------------
-// Carrega tabela de orçamentos
-// ---------------------------
+// ======================================================
+// CARREGAR LISTA DE ORÇAMENTOS
+// ======================================================
 window.loadBudgets = function () {
     const tableDiv = document.getElementById('budgets-table');
     const searchInput = document.getElementById('input-search-budgets');
@@ -87,11 +92,11 @@ window.loadBudgets = function () {
             tableDiv.innerHTML = data.html;
         })
         .catch(err => console.error(err));
-}
+};
 
-// ---------------------------
-// Inicializa filtros, busca e botão novo orçamento
-// ---------------------------
+// ======================================================
+// INICIALIZAÇÃO DA TELA DE ORÇAMENTOS
+// ======================================================
 window.initBudgets = function () {
     const searchInput = document.getElementById('input-search-budgets');
     const statusSelect = document.getElementById('filter-status-budgets');
@@ -102,9 +107,35 @@ window.initBudgets = function () {
 
     if (btnNewBudget) {
         btnNewBudget.addEventListener('click', () => {
-            window.loadContent('budget_form');
+            // Carrega o formulário de novo orçamento
+            window.loadContent('budget_form', () => {
+                // Inicializa JS do formulário
+                window.initNewBudgetForm();
+            });
         });
     }
 
+    // Carrega tabela inicial
     window.loadBudgets();
+};
+
+// ======================================================
+// FORM DINÂMICO DE NOVO ORÇAMENTO (SERVIÇOS)
+// ======================================================
+window.initNewBudgetForm = function () {
+    const addServiceBtn = document.getElementById('add-service');
+    if (!addServiceBtn) return;
+
+    addServiceBtn.addEventListener("click", () => {
+        const totalForms = document.querySelector("#id_service_set-TOTAL_FORMS");
+        const formCount = parseInt(totalForms.value);
+        const newForm = document.querySelectorAll('.card-new-service')[0].cloneNode(true);
+
+        // Limpa os valores dos inputs no clone
+        newForm.querySelectorAll('input, textarea, select').forEach(el => el.value = '');
+
+        newForm.innerHTML = newForm.innerHTML.replaceAll(`-0-`, `-${formCount}-`);
+        document.getElementById('services-forms').appendChild(newForm);
+        totalForms.value = formCount + 1;
+    });
 };

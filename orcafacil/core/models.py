@@ -73,12 +73,15 @@ class Budget(models.Model):
     ]
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, verbose_name="Cliente")
+    
     code = models.CharField(max_length=20,unique=True)
-    title = models.CharField(max_length=100)
-    description = models.TextField()
-    value = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
+    
+    title = models.CharField(max_length=100, verbose_name="Título")
+   
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente', 
+    verbose_name="Status")
+    
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
@@ -97,3 +100,20 @@ class Budget(models.Model):
         return f"{self.code} - {self.title}"
     
 
+class Services(models.Model):
+    
+    budget = models.ForeignKey(Budget, on_delete=models.CASCADE, related_name='services')
+
+    service = models.CharField(max_length=100, verbose_name='Serviço')
+
+    description = models.TextField(blank=True, null=True, verbose_name='Descrição')
+
+    quantity = models.PositiveIntegerField(default=1)
+
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Preço Unitário")
+
+    def subtotal(self):
+        return self.quantity * self.unit_price
+    
+    def __str__(self):
+        return f'{self.service} - ({self.budget.code}-{self.budget.title})'

@@ -61,25 +61,33 @@ td{
 }
 
 .status-aprovado {
-    background-color: #e6f4ea; /* verde claro */
-    color: #137333; /* verde escuro */
-    font-weight: 500;
-    border-radius: 50px;
-    padding: 0.4em 0.8em;
-  }
+  background-color: #e6f4ea; /* verde claro */
+  color: #137333; /* verde escuro */
+  font-weight: 500;
+  border-radius: 50px;
+  padding: 0.4em 0.8em;
+}
 
-  .status-pendente {
-    background-color: #fff7e6; /* amarelo claro */
-    color: #b26a00; /* dourado escuro */
-    font-weight: 500;
-    border-radius: 50px;
-    padding: 0.4em 0.8em;
-  }
+.status-pendente {
+  background-color: #fff7e6; /* amarelo claro */
+  color: #b26a00; /* dourado escuro */
+  font-weight: 500;
+  border-radius: 50px;
+  padding: 0.4em 0.8em;
+}
 
-  .status-recusado {
-    background-color: #fdecea; /* vermelho claro */
-    color: #a61b1b; /* vermelho escuro */
-    font-weight: 500;
-    border-radius: 50px;
-    padding: 0.4em 0.8em;
-  }
+.status-recusado {
+  background-color: #fdecea; /* vermelho claro */
+  color: #a61b1b; /* vermelho escuro */
+  font-weight: 500;
+  border-radius: 50px;
+  padding: 0.4em 0.8em;
+}
+
+.status-cancelado {
+  background-color: #eceff1; /* cinza claro */
+  color: #37474f; /* cinza escuro */
+  font-weight: 500;
+  border-radius: 50px;
+  padding: 0.4em 0.8em;
+}
