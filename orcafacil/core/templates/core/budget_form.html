@@ -1,25 +1,27 @@
+<h2>Novo Orçamento</h2>
+<span>Crie seu orçamento</span>
+
 <form action="{% url 'core:budget_create' %}" method="POST">
-
     {% csrf_token %}
-
-   {{ budget_form.as_p }}
+    {{ budget_form.as_p }}
 
     <h4 class="mt-4">Serviços</h4>
 
+    <div id="services-forms">
     {{ services_form.management_form }}
 
-    <div id="services-forms">
+    {% for form in services_form %}
         <div class="card card-new-service p-3 mb-3">
-            {{ services_form.as_p }}
+            {{ form.as_p }}
         </div>
-    </div>
+    {% endfor %}
+</div>
 
-    <button type="button" id="add-service" class="btn btn-outline-primary mb-3">Add Serviço</button>
+    <button type="button" id="add-service" class="btn btn-outline-primary mb-3">Adicionar Serviço</button>
+
     <div class="buttons-form">
-
         <button type="button" class="btn btn-danger"
             onclick="window.loadContent('budgets', window.initBudgets)">Cancelar</button>
         <button type="submit" class="btn btn-success">Enviar</button>
     </div>
-
 </form>

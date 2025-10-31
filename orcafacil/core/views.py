@@ -77,11 +77,12 @@ def dashboard_content(request, section):
         budget_form = BudgetForm(user=request.user)
 
         # 🔹 Formset de serviços (vários por orçamento)
-        formset = ServiceFormSet()
+        formset = ServiceFormSet(prefix='services')
 
         # 🔹 Adiciona no contexto
         context['budget_form'] = budget_form
-        context['services_form'] = formset
+        context['services_form'] = ServiceFormSet(prefix='services')
+
         context['clients'] = clients
 
         
@@ -233,34 +234,65 @@ def budget_list(request):
 def budget_create(request):
 
     user = request.user
-
+    
     if request.method == "POST":
         
         form = BudgetForm(request.POST)
-        formset = ServiceFormSet(request.POST)
+        formset = ServiceFormSet(request.POST,prefix='services')
+
+
+        print("Antes if is_valid()")
+        print(formset)
 
         if form.is_valid() and formset.is_valid():
             budget = form.save(commit=False)
             
             budget.user = user 
 
-            print("----------")
+            # print(budget)
+            # print("----------")
 
-            print(budget)
-            print("----------")
-
-            # budget.save()
+            budget.save()
 
             services = formset.save(commit=False)
 
             for s in services:
                 s.budget = budget
-                # s.save()
-                print("----------")
+                s.save()
+              
 
-                print(s)
-                print("----------")
+            formset.save_m2m()
 
-            # formset.save_m2m()
+            messages.success(request, "Orçamento gravado com sucesso")
+        
+        else:
+
+            print("Entrou no else — houve erros de validação.")
+            print("Form errors:", form.errors.as_text())
+            print("Formset non-form errors:", formset.non_form_errors())
+            print("Formset management form errors:", formset.management_form.errors)
+            print("Formset individual form errors:", [f.errors for f in formset])
+
+            # 🧩 MENSAGENS PARA O USUÁRIO
+            if form.errors:
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        messages.error(request, f"Erro em {field}: {error}")
+
+            if formset.management_form.errors:
+                for field, errors in formset.management_form.errors.items():
+                    for error in errors:
+                        messages.error(request, f"Erro no formset ({field}): {error}")
+
+            if formset.non_form_errors():
+                for error in formset.non_form_errors():
+                    messages.error(request, f"Erro geral nos serviços: {error}")
+
+            for i, f in enumerate(formset.forms):
+                if f.errors:
+                    for field, errors in f.errors.items():
+                        for error in errors:
+                            messages.error(request, f"Serviço {i + 1} - {field}: {error}")
+
 
     return redirect('/core')

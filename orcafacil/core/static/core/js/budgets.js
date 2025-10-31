@@ -127,15 +127,40 @@ window.initNewBudgetForm = function () {
     if (!addServiceBtn) return;
 
     addServiceBtn.addEventListener("click", () => {
-        const totalForms = document.querySelector("#id_service_set-TOTAL_FORMS");
-        const formCount = parseInt(totalForms.value);
-        const newForm = document.querySelectorAll('.card-new-service')[0].cloneNode(true);
+        const totalFormsInput = document.querySelector("#id_services-TOTAL_FORMS");
+        let formCount = parseInt(totalFormsInput.value, 10);
 
-        // Limpa os valores dos inputs no clone
-        newForm.querySelectorAll('input, textarea, select').forEach(el => el.value = '');
+        const formContainer = document.getElementById("services-forms");
+        const firstForm = formContainer.querySelector(".card-new-service");
 
-        newForm.innerHTML = newForm.innerHTML.replaceAll(`-0-`, `-${formCount}-`);
-        document.getElementById('services-forms').appendChild(newForm);
-        totalForms.value = formCount + 1;
+        if (!firstForm) {
+            console.error("Form base não encontrado!");
+            return;
+        }
+
+        // Clona o primeiro formulário
+        const newForm = firstForm.cloneNode(true);
+
+        // Limpa valores e renomeia corretamente todos os índices
+        newForm.querySelectorAll("input, textarea, select, label").forEach(el => {
+            if (el.name)
+                el.name = el.name.replaceAll(/services-\d+-/g, `services-${formCount}-`);
+            if (el.id)
+                el.id = el.id.replaceAll(/services-\d+-/g, `services-${formCount}-`);
+            if (el.htmlFor)
+                el.htmlFor = el.htmlFor.replaceAll(/services-\d+-/g, `services-${formCount}-`);
+
+            // Limpa campos visíveis
+            if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+                if (el.type === "checkbox" || el.type === "radio") el.checked = false;
+                else if (el.type !== "hidden") el.value = "";
+            }
+        });
+
+        // Adiciona o novo formulário
+        formContainer.appendChild(newForm);
+
+        // Atualiza o contador de formulários
+        totalFormsInput.value = formCount + 1;
     });
 };

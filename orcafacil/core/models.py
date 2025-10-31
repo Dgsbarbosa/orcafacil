@@ -81,7 +81,8 @@ class Budget(models.Model):
    
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente', 
     verbose_name="Status")
-    
+    is_active = models.BooleanField(default=True, verbose_name='Orçamento Ativo')
+    total_value = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Valor Total")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
@@ -99,6 +100,11 @@ class Budget(models.Model):
     def __str__(self):
         return f"{self.code} - {self.title}"
     
+    def update_total(self):
+        total = sum(s.subtotal() for s in self.services.all())
+        self.total_value = total
+        self.save(update_fields=['total_value'])
+    
 
 class Services(models.Model):
     
@@ -108,12 +114,20 @@ class Services(models.Model):
 
     description = models.TextField(blank=True, null=True, verbose_name='Descrição')
 
-    quantity = models.PositiveIntegerField(default=1)
+    quantity = models.DecimalField(max_digits=10, decimal_places=2,default=1, verbose_name='Quantidade')
 
     unit_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Preço Unitário")
+
+    subtotal_budget = models.DecimalField(max_digits=10, decimal_places=2,verbose_name='Subtotal')
 
     def subtotal(self):
         return self.quantity * self.unit_price
     
+    def save(self, *args,**kargs):
+        self.subtotal_budget = self.subtotal()
+        super().save(*args,**kargs)
+
+        if self.budget_id:
+            self.budget.update_total()
     def __str__(self):
         return f'{self.service} - ({self.budget.code}-{self.budget.title})'
