@@ -1,0 +1,117 @@
+{% load currency %}
+
+<header class="content-header">
+                <div>
+                    <h1>Detalhes do Orçamento</h1>
+                    <p class="text-muted">Veja todas as informações cadastradas</p>
+                </div>
+
+            </header>
+<div class="card mb-3">
+    <div class="card-body">
+        <div class="client-detail-container">
+            
+
+            <div class="page-content">
+                <div class="client-info-card">
+                    <h2>{{ budget.code}} - {{ budget.title }}</h2>
+                    <p><strong>Status:</strong>
+                        <span class="status-{{ budget.status }}
+">
+                            {{ budget.status }}
+                        </span>
+                    </p>
+
+                    <div class="info-grid">
+                        <div><strong>Nome:</strong> {{ budget.client }} {{ client.lastname }}</div>
+                        <div><strong>Telefone:</strong> {{ budget.client.phone }}</div>
+                        <div><strong>E-mail:</strong> {{ budget.client.email }}</div>
+                        <div><strong>Endereço:</strong> {{ budget.client.street }}</div>
+                        <div><strong>Numero:</strong> {{ budget.client.number }}</div>
+                        <div><strong>Complemento:</strong> {{ budget.client.complement }}</div>
+                        <div><strong>Bairro:</strong> {{ budget.client.neighborhood }}</div>
+
+
+
+                        <div><strong>Cidade:</strong> {{ budget.client.city }}</div>
+                        <div><strong>Estado:</strong> {{ budget.client.state }}</div>
+                        <div><strong>CEP:</strong> {{ budget.client.zipcode|default:"" }}</div>
+
+
+                    </div>
+
+                    <hr>
+
+
+                    <div class="services-section">
+                        <h3>Serviços</h3>
+                        {% if budget.services.all > 0 %}
+                        {%for service in budget.services.all %}
+
+                        <div class="card border-dark mb-3" style="max-width: 18rem;">
+                            <div class="card-header">{{ service.service }}</div>
+                            <div class="card-body">
+                                <!-- <h5 class="card-title">Dark card title</h5> -->
+                                <p class="card-text">{{ service.description }}</p>
+                                <p class="card-text">Quantidade: {{ service.quantity }}</p>
+                                <p class="card-text">Valor Unitário: {{ service.unit_price|currency }}</p>
+                                <p class="card-text">Subtotal: {{ service.subtotal_budget|currency }}</p>
+
+                            </div>
+
+                        </div>
+
+                        {% endfor%}
+
+                        {% else %}
+                        <div class="card border-dark mb-3" style="max-width: 18rem;">
+                            <div class="card-body">
+                                <!-- <h5 class="card-title">Dark card title</h5> -->
+                                <p class="card-text">Nenhum serviço cadastrado</p>
+
+                            </div>
+
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+                    <div class="values-services">
+                        <h3>Valor Total: {{ budget.total_value|currency }}</h3>
+                    </div>
+                    <div class="card border-dark mb-3" style="max-width: 18rem;">
+                        <div class="card-header">
+                            <h6>Observações</h6>
+                        </div>
+                        <div class="card-body">
+                            <!-- <h5 class="card-title">Dark card title</h5> -->
+                            <p class="card-text">{{ budget.obs|default:"Nenhuma observação cadastrada." }}</p>
+                            <div class="card-footer bg-transparent border-success"><span class="text-muted">
+                                Criado em {{ budget.created_at|date:"d/m/Y" }}</span></div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+                <div class="buttons-form">
+                    <button type="button" class="btn btn-secondary"
+                        onclick="window.loadContent('budgets', window.initBudgets)">Voltar</button>
+                    <button class="btn btn-primary" onclick="window.loadContent('budget/edit/{{ budget.id }}')">
+                        Editar Orçamento
+                    </button>
+
+                    <button class="btn btn-danger delete-client" data-client_id="{{ client.id }}">
+                        Excluir
+                    </button>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+</div>

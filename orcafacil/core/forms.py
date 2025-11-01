@@ -30,5 +30,5 @@ ServiceFormSet = inlineformset_factory(
     Budget, Services,
     form=ServicesForm,
     extra=1,
-    can_delete=True
+    can_delete=False
 )

@@ -81,8 +81,11 @@ class Budget(models.Model):
    
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente', 
     verbose_name="Status")
+    
     is_active = models.BooleanField(default=True, verbose_name='Orçamento Ativo')
+    
     total_value = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Valor Total")
+    obs = models.TextField(verbose_name='Observaçoes')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
@@ -130,4 +133,4 @@ class Services(models.Model):
         if self.budget_id:
             self.budget.update_total()
     def __str__(self):
-        return f'{self.service} - ({self.budget.code}-{self.budget.title})'
+        return f'Orçamento: {self.budget.code} - Titulo: {self.budget.title} - Serviço: {self.service}'

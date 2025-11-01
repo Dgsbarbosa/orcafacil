@@ -91,3 +91,7 @@ td{
   border-radius: 50px;
   padding: 0.4em 0.8em;
 }
+
+    .formset .delete-row {
+        display: none;
+    }

@@ -20,7 +20,7 @@ function getCookie(name) {
     return cookieValue;
 }
 
-// ======================================================
+// Delete ======================================================
 // EXCLUSÃO DE ORÇAMENTO (delegação global)
 // ======================================================
 document.addEventListener('click', function (e) {
@@ -53,7 +53,7 @@ document.addEventListener('click', function (e) {
         .catch(err => console.error(err));
 });
 
-// ======================================================
+// Edit and View ======================================================
 // EDIÇÃO / VISUALIZAÇÃO DE ORÇAMENTO
 // ======================================================
 document.addEventListener('click', function (e) {
@@ -157,10 +157,30 @@ window.initNewBudgetForm = function () {
             }
         });
 
+        // ⚡ Adiciona o botão de exclusão (apenas a partir do segundo)
+        if (formCount >= 1) {
+            const deleteBtn = document.createElement("button");
+            deleteBtn.type = "button";
+            deleteBtn.className = "btn btn-sm btn-danger remove-service mt-2";
+            deleteBtn.innerHTML = "Excluir este serviço";
+
+            // Botão remove o próprio formulário do DOM
+            deleteBtn.addEventListener("click", () => {
+                newForm.remove();
+
+                // Atualiza contador total
+                const currentForms = formContainer.querySelectorAll(".card-new-service").length;
+                totalFormsInput.value = currentForms;
+            });
+
+            // Adiciona o botão dentro do card (no final do formulário)
+            newForm.appendChild(deleteBtn);
+        }
+
         // Adiciona o novo formulário
         formContainer.appendChild(newForm);
 
-        // Atualiza o contador de formulários
+        // Atualiza contador de formulários
         totalFormsInput.value = formCount + 1;
     });
 };

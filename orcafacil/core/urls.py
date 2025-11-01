@@ -23,4 +23,6 @@ urlpatterns = [
     path('budgets/', views.budgets, name='budget'),
     
     path('budgets/new/', views.budget_create, name='budget_create'),
+
+    path('dashboard/budget/view/<int:budget_id>/',views.budget_view,name="budget_view")
 ]

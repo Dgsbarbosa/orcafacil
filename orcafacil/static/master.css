@@ -21,3 +21,6 @@ nav{
     position: fixed;
 }
 
+i{
+  cursor: pointer;
+}

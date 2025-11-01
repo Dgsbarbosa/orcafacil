@@ -14,8 +14,8 @@
     {% for budget in budgets %}
     <tr>
       <td>{{ budget.code }}</td>
-      <td>{{ budget.client.name }}</td>
-      <td>{{ budget.services.subtotal|currency }}</td>
+      <td>{{ budget.client.name }} {{ budget.client.lastname }}</td>
+      <td>{{ budget.total_value|currency }}</td>
       <td><span class="status-{{ budget.status }}">{{ budget.status }}</span></td>
       <td>{{ budget.created_at|date:"d/m/Y" }}</td>
       <td>
