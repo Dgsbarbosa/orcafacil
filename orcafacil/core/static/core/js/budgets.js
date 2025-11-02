@@ -131,6 +131,7 @@ window.initBudgets = function () {
 window.initNewBudgetForm = function () {
     const addServiceBtn = document.getElementById('add-service');
     if (!addServiceBtn) return;
+        initMaterialForm("materials");
 
     addServiceBtn.addEventListener("click", () => {
         const totalFormsInput = document.querySelector("#id_services-TOTAL_FORMS");
@@ -195,6 +196,7 @@ window.initNewBudgetForm = function () {
 window.initEditBudgetForm = function () {
     const addServiceBtn = document.getElementById('add-service');
     if (!addServiceBtn) return;
+        initMaterialForm("materials");
 
     addServiceBtn.addEventListener("click", () => {
         const totalFormsInput = document.querySelector("#id_services-TOTAL_FORMS");
@@ -234,3 +236,52 @@ window.initEditBudgetForm = function () {
         totalFormsInput.value = formCount + 1;
     });
 };
+
+// ======================================================
+// FORM DINÂMICO DE MATERIAIS
+// ======================================================
+function initMaterialForm(prefix) {
+    const addMaterialBtn = document.getElementById('add-material');
+    if (!addMaterialBtn) return;
+
+    addMaterialBtn.addEventListener("click", () => {
+        const totalFormsInput = document.querySelector(`#id_${prefix}-TOTAL_FORMS`);
+        let formCount = parseInt(totalFormsInput.value, 10);
+
+        const formContainer = document.getElementById(`${prefix}-forms`);
+        const firstForm = formContainer.querySelector(".card-new-material");
+
+        if (!firstForm) return;
+
+        const newForm = firstForm.cloneNode(true);
+        newForm.querySelectorAll("input, textarea, select, label").forEach(el => {
+            if (el.name)
+                el.name = el.name.replaceAll(new RegExp(`${prefix}-\\d+-`, 'g'), `${prefix}-${formCount}-`);
+            if (el.id)
+                el.id = el.id.replaceAll(new RegExp(`${prefix}-\\d+-`, 'g'), `${prefix}-${formCount}-`);
+            if (el.htmlFor)
+                el.htmlFor = el.htmlFor.replaceAll(new RegExp(`${prefix}-\\d+-`, 'g'), `${prefix}-${formCount}-`);
+
+            if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+                if (el.type !== "hidden") el.value = "";
+            }
+        });
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.type = "button";
+        deleteBtn.className = "btn btn-sm btn-danger remove-material mt-2";
+        deleteBtn.innerHTML = "Excluir este material";
+        deleteBtn.addEventListener("click", () => {
+            newForm.remove();
+            const currentForms = formContainer.querySelectorAll(".card-new-material").length;
+            totalFormsInput.value = currentForms;
+        });
+        newForm.appendChild(deleteBtn);
+
+        formContainer.appendChild(newForm);
+        totalFormsInput.value = formCount + 1;
+    });
+}
+
+
+

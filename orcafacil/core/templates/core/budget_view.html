@@ -75,6 +75,22 @@
                         {% endif %}
 
                     </div>
+<div class="materials-section mt-4">
+    <h3>Materiais</h3>
+    
+        {% for material in budget.materials.all %}
+            <div class="card border-dark mb-3" style="max-width: 18rem;">
+                <div class="card-header">{{ material.name }}</div>
+                <div class="card-body">
+                    <p class="card-text">{{ material.description }}</p>
+                    <p class="card-text">Qtd: {{ material.quantity }}</p>
+                    <p class="card-text">Valor Unitário: {{ material.unit_price|currency }}</p>
+                    <p class="card-text">Subtotal: {{ material.subtotal_material|currency }}</p>
+                </div>
+            </div>
+        {% endfor %}
+   
+</div>
 
                     <div class="values-services">
                         <h3>Valor Total: {{ budget.total_value|currency }}</h3>

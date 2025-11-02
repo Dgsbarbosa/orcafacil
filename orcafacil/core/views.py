@@ -1,8 +1,9 @@
+# IMPORTAÇÕES
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render,redirect
 from django.contrib.auth.decorators import login_required
-from .models import Budget, Client,Services
-from .forms import ClientForm, BudgetForm, ServiceFormSet
+from .models import Budget, Client,Services,Material
+from .forms import ClientForm, BudgetForm, ServiceFormSet,MaterialFormSet
 from .utils import count_budgets_per_month,pass_rate
 from django.template.loader import render_to_string
 from django.db.models import Q
@@ -10,7 +11,7 @@ from django.contrib import messages
 
 from django.forms import inlineformset_factory
 
-
+from .utils import normalize_budget_codes
 @login_required
 def dashboard(request):
     user = request.user
@@ -28,6 +29,7 @@ def dashboard_content(request, section):
     context = {}
     user = request.user
 
+    normalize_budget_codes()
 
     if section == 'home':
 
@@ -57,9 +59,9 @@ def dashboard_content(request, section):
     
     elif section == 'clients':
 
-        clients = Client.objects.filter(user=user)
+        clients = Client.objects.filter(user=user,is_active=True)
         
-        # context['clients'] = 
+        
 
         html = render(request, 'core/clients.html', context).content.decode('utf-8')
         
@@ -72,7 +74,7 @@ def dashboard_content(request, section):
         html = render(request, 'core/budgets.html', context).content.decode('utf-8')
     
     elif section == "budget_form":
-        clients = Client.objects.filter(user=request.user)
+        clients = Client.objects.filter(user=request.user,is_active=True)
 
         # 🔹 Passa o user para o form (caso o BudgetForm use ele para filtrar clientes)
         budget_form = BudgetForm(user=request.user)
@@ -80,11 +82,13 @@ def dashboard_content(request, section):
         # 🔹 Formset de serviços (vários por orçamento)
         formset = ServiceFormSet(prefix='services')
 
+        materials_form = MaterialFormSet(prefix='materials')
         # 🔹 Adiciona no contexto
         context['budget_form'] = budget_form
-        context['services_form'] = ServiceFormSet(prefix='services')
+        context['services_form'] = formset
 
         context['clients'] = clients
+        context['materials_form']=materials_form
 
         
         html = render(request, 'core/budget_form.html', context).content.decode('utf-8')
@@ -106,7 +110,7 @@ def client_list(request):
     search = request.GET.get('search', '')        # busca por nome ou sobrenome
     status = request.GET.get('status', '')        # pendente, aprovado, recusado
 
-    clients = Client.objects.filter(user=user).order_by('-created_at')
+    clients = Client.objects.filter(user=user,is_active=True).order_by('-created_at')
 
     # Filtra pelo termo
     if search:
@@ -212,7 +216,7 @@ def budgets(request):
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         search = request.GET.get('search', '')
         status = request.GET.get('status', '')
-        budgets = Budget.objects.all().order_by('-code')
+        budgets = Budget.objects.filter(user=request.user,is_active=True).order_by('-code')
 
         if search:
             budgets = budgets.filter(
@@ -231,9 +235,6 @@ def budgets(request):
     html = render_to_string('core/budgets.html', {})
     return JsonResponse({'html': html})
 
-@login_required
-def budget_list(request):
-    return render(request, 'core/budget_list.html')
 
 @login_required
 def budget_create(request):
@@ -244,10 +245,11 @@ def budget_create(request):
         
         form = BudgetForm(request.POST)
         formset = ServiceFormSet(request.POST,prefix='services')
+        material_formset = MaterialFormSet(request.POST, prefix='materials') 
 
         print('Validando Formulário...')
 
-        if form.is_valid() and formset.is_valid():
+        if form.is_valid() and formset.is_valid() and material_formset.is_valid():
             budget = form.save(commit=False)
             
             budget.user = user 
@@ -257,12 +259,18 @@ def budget_create(request):
 
             services = formset.save(commit=False)
 
+            material = material_formset.save(commit=False)
+
             for s in services:
                 s.budget = budget
                 s.save()
               
+            for m in material_formset.save(commit=False):
+                m.budget = budget
+                m.save()
 
             formset.save_m2m()
+            material_formset.save_m2m()
 
             print("Orçamento criado com sucesso.")
 
@@ -327,18 +335,24 @@ def budget_edit(request, budget_id):
         extra=extra ,                   # sem formulário vazio
         can_delete=True
     )
+
+    extra_material = 0
+    if len(budget.materials.all() )== 0:
+        extra_material = 1
+    MaterialFormSetEdit = inlineformset_factory(Budget, Material, form=MaterialFormSet.form, extra=extra_material, can_delete=True)
     
     if request.method == 'POST':
         # cria os forms com instance e prefix corretos
         form = BudgetForm(request.POST, instance=budget)
         formset = ServiceFormSetEdit(request.POST, instance=budget, prefix=prefix)
+        material_formset = MaterialFormSetEdit(request.POST, instance=budget, prefix='materials')
 
         
 
         # debug (remova em produção)
         print('\n>>> POST - Validando Formulários..\n')
         
-        if form.is_valid() and formset.is_valid():
+        if form.is_valid() and formset.is_valid() and material_formset.is_valid():
             # salva orçamento
             
             print("Formulários validados...\n")
@@ -355,11 +369,14 @@ def budget_edit(request, budget_id):
 
                 print(f"{'-'*40}\n{s} ")
                 s.save()
-
+            for m in material_formset.save(commit=False):
+                m.budget = budget
+                m.save()
             # deleta itens marcados com DELETE
             for obj in formset.deleted_objects:
                 obj.delete()
-
+            for obj in material_formset.deleted_objects:
+                obj.delete()
             # finalize formset m2m (não estritamente necessário para FK simples)
 
             formset.save_m2m()
@@ -397,11 +414,12 @@ def budget_edit(request, budget_id):
         form = BudgetForm(instance=budget)
         formset = ServiceFormSetEdit(instance=budget, prefix=prefix)
 
-        
+        material_formset = MaterialFormSetEdit(instance=budget, prefix='materials')
         context = {
             'form': form,
             'formset': formset,
-            'budget': budget
+            'budget': budget,
+            'materials_formset': material_formset,
         }
         html = render(request, 'core/budget_edit.html', context).content.decode('utf-8')
         return JsonResponse({'success': True, 'html': html})

@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Client, Budget,Services
+from .models import Client, Budget,Services,Material
 from django.forms import inlineformset_factory
 
 class ClientForm(ModelForm):
@@ -56,6 +56,41 @@ ServiceFormSet = inlineformset_factory(
     Budget,
     Services,
     form=ServicesForm,
+    extra=1,
+    can_delete=True
+)
+
+
+class MaterialForm(ModelForm):
+    subtotal = forms.DecimalField(
+        label="Subtotal",
+        required=False,
+        disabled=True,
+        decimal_places=4,
+        max_digits=15
+    )
+
+    class Meta:
+        model = Material
+        fields = ['name', 'description', 'quantity', 'unit_price']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            subtotal = (
+                self.instance.subtotal_material
+                if getattr(self.instance, "subtotal_material", None)
+                else self.instance.subtotal()
+            )
+            self.fields['subtotal'].initial = subtotal
+        else:
+            self.fields['subtotal'].initial = 0
+
+
+MaterialFormSet = inlineformset_factory(
+    Budget,
+    Material,
+    form=MaterialForm,
     extra=1,
     can_delete=True
 )

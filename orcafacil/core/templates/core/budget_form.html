@@ -8,14 +8,29 @@
     <h4 class="mt-4">Serviços</h4>
 
     <div id="services-forms">
-    {{ services_form.management_form }}
+        {{ services_form.management_form }}
 
-    {% for form in services_form %}
+        {% for form in services_form %}
         <div class="card card-new-service p-3 mb-3">
             {{ form.as_p }}
         </div>
-    {% endfor %}
-</div>
+        {% endfor %}
+    </div>
+
+    <h4 class="mt-4">Materiais</h4>
+
+    <div id="materials-forms">
+        {{ materials_form.management_form }}
+
+        {% for form in materials_form %}
+        <div class="card card-new-material p-3 mb-3">
+            {{ form.as_p }}
+        </div>
+        {% endfor %}
+    </div>
+
+    <button type="button" id="add-material" class="btn btn-outline-primary mb-3">Adicionar Material</button>
+
 
     <button type="button" id="add-service" class="btn btn-outline-primary mb-3">Adicionar Serviço</button>
 
