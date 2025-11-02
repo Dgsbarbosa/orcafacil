@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.conf import settings
 from .plans import PLAN_FEATURES
+from common.models import AddressMixin
 
 # ----------------------
 # Gerenciador de usuário
@@ -26,15 +27,15 @@ class CustomUserManager(BaseUserManager):
 # Modelo CustomUser
 # ----------------------
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(unique=True)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True, verbose_name="Email de acesso")
+    first_name = models.CharField(max_length=100, verbose_name="Nome")
+    last_name = models.CharField(max_length=100, verbose_name="Sobrenome")
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
     accept_email = models.BooleanField(default=False)
     objects = CustomUserManager()
-
+    created_at = models.DateField(auto_now_add=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
@@ -52,12 +53,12 @@ class Plan(models.TextChoices):
 # ----------------------
 # Perfil do usuário
 # ----------------------
-class UserProfile(models.Model):
+class UserProfile(AddressMixin):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    plan = models.CharField(max_length=10, choices=Plan.choices, default=Plan.FREE)
+    plan = models.CharField(max_length=10, choices=Plan.choices, default=Plan.FREE, verbose_name="Plano")
   
-    address = models.TextField(blank=True, null=True)
-    created_budgets = models.PositiveBigIntegerField(default=0)
+    
+    created_budgets = models.PositiveBigIntegerField(default=0,verbose_name="Orçamentos criados: ")
 
     def __str__(self):
         return f'{self.user.email} ({self.plan})'
@@ -73,7 +74,7 @@ class UserProfile(models.Model):
 # ----------------------
 # Empresa
 # ----------------------
-class Company(models.Model):
+class Company(AddressMixin):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     company_name = models.CharField(max_length=100, blank=True, null=True)
     logo = models.ImageField(upload_to='logos/', blank=True, null=True)

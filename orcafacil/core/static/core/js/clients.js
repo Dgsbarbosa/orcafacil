@@ -53,6 +53,7 @@ document.addEventListener('click', function (e) {
         .catch(err => console.error(err));
 });
 
+// Botões edit and view
 // ---------------------------
 // Delegação global para editar/visualizar cliente
 // ---------------------------

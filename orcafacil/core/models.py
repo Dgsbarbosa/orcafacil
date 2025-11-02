@@ -4,43 +4,11 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django import forms
 from django.utils import timezone
+from accounts.models import UserProfile
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 
-
-class AddressMixin(models.Model):
-    street = models.CharField(max_length=255,verbose_name="Endereço")
-
-    number = models.CharField(max_length=20, verbose_name="Número", null=True, blank=True)
-    complement = models.CharField(max_length=150, null=True, blank=True, verbose_name='Complemento')
-    neighborhood = models.CharField(max_length=100, verbose_name="Bairro", blank=True, null=True)
-    city = models.CharField(max_length=100, verbose_name="Cidade", blank=True, null=True)
-    state = models.CharField(max_length=100, verbose_name="Estado", blank=True, null=True)
-    zipcode = models.CharField(max_length=15, verbose_name="CEP", blank=True, null=True)
-
-    class Meta:
-        abstract = True
-        verbose_name = "Endereço"
-        verbose_name_plural = "Endereços"
-
-
-
-    def __str__(self):
-        
-        fomated_address = f" {self.street}, {self.number}, {self.complement}, {self.neighborhood}, {self.city}, {self.state}, {self.country}, {self.zipcode}"
-        return fomated_address
-
-class SoftDeleteModel(models.Model):
-    is_active = models.BooleanField(default=True, verbose_name="Ativo")
-    deleted_at = models.DateTimeField(null=True, blank=True, verbose_name="Data de exclusão")
-
-    class Meta:
-        abstract = True
-
-    def delete(self, using=None, keep_parents=False):
-        self.status = "inativo"
-        self.is_active = False
-        self.deleted_at = timezone.now()
-        self.save(update_fields=["status", "is_active", "deleted_at"])
-
+from common.models import AddressMixin, SoftDeleteModel
 
     
 class Client(AddressMixin,SoftDeleteModel):
@@ -134,8 +102,6 @@ class Budget(SoftDeleteModel):
         self.total_value = total_services + total_materials
         self.save(update_fields=['total_value'])
 
-
-
     
 
 class Services(models.Model):
@@ -194,7 +160,15 @@ class Material(models.Model):
     def __str__(self):
         return f"{self.name} ({self.budget.code})"
 
+@receiver(post_save, sender=Budget)
+def update_created_budgets_on_create(sender, instance, created, **kwargs):
+    if created:  # só conta se for novo
+        profile, _ = UserProfile.objects.get_or_create(user=instance.user)
+        profile.created_budgets += 1
+        profile.save()
 
+
+    
 
 
 

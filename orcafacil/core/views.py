@@ -2,13 +2,15 @@
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render,redirect
 from django.contrib.auth.decorators import login_required
+
+from accounts.models import Company, UserProfile
 from .models import Budget, Client,Services,Material
 from .forms import ClientForm, BudgetForm, ServiceFormSet,MaterialFormSet
-from .utils import count_budgets_per_month,pass_rate
+from .utils import count_budgets_per_month,pass_rate,atualizar_created_budgets
 from django.template.loader import render_to_string
 from django.db.models import Q
 from django.contrib import messages
-
+from accounts.forms import UserProfileForm, CompanyForm, LoginForm
 from django.forms import inlineformset_factory
 
 from .utils import normalize_budget_codes
@@ -29,7 +31,6 @@ def dashboard_content(request, section):
     context = {}
     user = request.user
 
-    normalize_budget_codes()
 
     if section == 'home':
 
@@ -94,6 +95,19 @@ def dashboard_content(request, section):
         html = render(request, 'core/budget_form.html', context).content.decode('utf-8')
     
     elif section == 'profile':
+
+        user = request.user
+        profile, _ = UserProfile.objects.get_or_create(user=user)
+        company, _ = Company.objects.get_or_create(user=user)
+        formAccess = LoginForm(instance=user)
+        formProfile = UserProfileForm(instance=profile)
+        formCompany = CompanyForm(instance=company)
+        context['user']=user
+        context['formAccess']=formAccess
+        context['formProfile']=formProfile
+        context['formCompany']=formCompany
+
+
         html = render(request, 'core/profile.html', context).content.decode('utf-8')
     
     else:

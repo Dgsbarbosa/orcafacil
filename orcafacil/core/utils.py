@@ -11,6 +11,33 @@ from django.db import transaction
 from django.db import IntegrityError
 from django.utils import timezone
 from core.models import Budget
+# accounts/utils.py
+from accounts.models import UserProfile,CustomUser
+from core.models import Budget
+
+def atualizar_created_budgets():
+    """
+    Atualiza o campo 'created_budgets' de todos os perfis de usuário
+    com base na contagem real de orçamentos existentes.
+    """
+    users = CustomUser.objects.all()
+    for user in users:
+        perfil = UserProfile.objects.create(user=user)
+        perfil.save()
+        print(f"usuario criado: {user}")
+
+    perfis = UserProfile.objects.all()
+    total = perfis.count()
+    atualizados = 0
+
+    for profile in perfis:
+        count = Budget.objects.filter(user=profile.user).count()
+        if profile.created_budgets != count:
+            profile.created_budgets = count
+            profile.save()
+            atualizados += 1
+
+    print(f"✅ {atualizados}/{total} perfis atualizados com sucesso.")
 
 def normalize_budget_codes(batch_size: int = 500):
     """

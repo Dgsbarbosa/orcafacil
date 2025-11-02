@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Carrega seção inicial
-    loadSection('budgets');
+    loadSection('profile');
 
     menuItems.forEach(item => {
         item.addEventListener('click', () => {

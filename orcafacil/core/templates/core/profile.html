@@ -1,2 +1,26 @@
 <h2>Perfil</h2>
 <p>Aqui está seu perfil.</p>
+
+
+<div class="card user-profile">
+<div class="card-body">
+    <h3>Informações de acesso </h3>
+    {{ formAccess.as_p }}
+</div>
+</div>
+
+<div class="card personal-profile">
+    <div class="card-body">
+        <h3>Informações Pessoais</h3>
+    {{ formProfile.as_p }}
+
+    </div> 
+</div>
+
+<div class="card professional-profile">
+<div class="card-body">
+    <h3>Informações da Empresa </h3>
+    {{ formCompany.as_p }}
+
+</div>
+</div>

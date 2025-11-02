@@ -1,5 +1,5 @@
 from django import forms
-from .models import UserProfile,CustomUser
+from .models import UserProfile,CustomUser,Company
 
 class CustomUserForm(forms.ModelForm):
     class Meta:
@@ -10,3 +10,15 @@ class LoginForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ['email','password']
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model= UserProfile
+        fields= "__all__"
+        exclude = ['user']
+
+class CompanyForm(forms.ModelForm):
+    class Meta:
+        model = Company
+        fields = "__all__"
+        exclude = ['user']
