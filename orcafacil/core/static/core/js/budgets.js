@@ -62,8 +62,11 @@ document.addEventListener('click', function (e) {
 
     if (editBtn) {
         const id = editBtn.dataset.id;
-        window.loadContent(`budget/edit/${id}`);
+        window.loadContent(`budget/edit/${id}`, () => {
+            window.initEditBudgetForm();
+        });
     }
+
 
     if (viewBtn) {
         const id = viewBtn.dataset.id;
@@ -71,7 +74,7 @@ document.addEventListener('click', function (e) {
     }
 });
 
-// ======================================================
+// Carrega tabela de orçamentos ======================================================
 // CARREGAR LISTA DE ORÇAMENTOS
 // ======================================================
 window.loadBudgets = function () {
@@ -94,7 +97,7 @@ window.loadBudgets = function () {
         .catch(err => console.error(err));
 };
 
-// ======================================================
+// Inicia os orçamentos ======================================================
 // INICIALIZAÇÃO DA TELA DE ORÇAMENTOS
 // ======================================================
 window.initBudgets = function () {
@@ -119,7 +122,7 @@ window.initBudgets = function () {
     window.loadBudgets();
 };
 
-// ======================================================
+// Adiciona serviço ======================================================
 // FORM DINÂMICO DE NOVO ORÇAMENTO (SERVIÇOS)
 // ======================================================
 window.initNewBudgetForm = function () {
@@ -181,6 +184,50 @@ window.initNewBudgetForm = function () {
         formContainer.appendChild(newForm);
 
         // Atualiza contador de formulários
+        totalFormsInput.value = formCount + 1;
+    });
+};
+
+// Inicia os formularios para edição 
+window.initEditBudgetForm = function () {
+    const addServiceBtn = document.getElementById('add-service');
+    if (!addServiceBtn) return;
+
+    addServiceBtn.addEventListener("click", () => {
+        const totalFormsInput = document.querySelector("#id_services-TOTAL_FORMS");
+        let formCount = parseInt(totalFormsInput.value, 10);
+        const formContainer = document.getElementById("services-forms");
+        const firstForm = formContainer.querySelector(".card-new-service");
+
+        if (!firstForm) return;
+
+        const newForm = firstForm.cloneNode(true);
+        newForm.querySelectorAll("input, textarea, select, label").forEach(el => {
+            if (el.name)
+                el.name = el.name.replaceAll(/services-\d+-/g, `services-${formCount}-`);
+            if (el.id)
+                el.id = el.id.replaceAll(/services-\d+-/g, `services-${formCount}-`);
+            if (el.htmlFor)
+                el.htmlFor = el.htmlFor.replaceAll(/services-\d+-/g, `services-${formCount}-`);
+            if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+                if (el.type === "checkbox" || el.type === "radio") el.checked = false;
+                else if (el.type !== "hidden") el.value = "";
+            }
+        });
+
+        // adiciona botão de exclusão
+        const deleteBtn = document.createElement("button");
+        deleteBtn.type = "button";
+        deleteBtn.className = "btn btn-sm btn-danger remove-service mt-2";
+        deleteBtn.innerHTML = "Excluir este serviço";
+        deleteBtn.addEventListener("click", () => {
+            newForm.remove();
+            const currentForms = formContainer.querySelectorAll(".card-new-service").length;
+            totalFormsInput.value = currentForms;
+        });
+        newForm.appendChild(deleteBtn);
+
+        formContainer.appendChild(newForm);
         totalFormsInput.value = formCount + 1;
     });
 };

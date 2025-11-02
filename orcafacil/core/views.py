@@ -1,13 +1,28 @@
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render,redirect
 from django.contrib.auth.decorators import login_required
-from .models import Budget, Client
+from .models import Budget, Client,Services
 from .forms import ClientForm, BudgetForm, ServiceFormSet
 from .utils import count_budgets_per_month,pass_rate
 from django.template.loader import render_to_string
 from django.db.models import Q
 from django.contrib import messages
 
+from django.forms import inlineformset_factory
+
+@login_required
+def budget_edit(request, budget_id):
+    budget = get_object_or_404(Budget, pk=budget_id)
+    prefix = 'services'
+
+    # 🔹 Cria o formset manualmente
+    ServiceFormSetEdit = inlineformset_factory(
+        Budget,
+        Services,
+        form=ServiceFormSet.form,  # usa o mesmo form
+        extra=0,                   # sem formulário vazio
+        can_delete=True
+    )
 
 @login_required
 def dashboard(request):
@@ -104,7 +119,7 @@ def client_list(request):
     search = request.GET.get('search', '')        # busca por nome ou sobrenome
     status = request.GET.get('status', '')        # pendente, aprovado, recusado
 
-    clients = Client.objects.filter(user=user)
+    clients = Client.objects.filter(user=user).order_by('-created_at')
 
     # Filtra pelo termo
     if search:
@@ -303,9 +318,96 @@ def budget_view(request, budget_id):
 
     budget = get_object_or_404(Budget, pk=budget_id)
 
+    print(len(budget.services.all()))
     context = {
         'budget':budget
     }
     html = render(request, "core/budget_view.html",context).content.decode('utf-8')
 
     return JsonResponse({"html":html})
+
+@login_required
+def budget_edit(request, budget_id):
+    budget = get_object_or_404(Budget, pk=budget_id)
+    prefix = 'services'   
+    extra = 0
+    if len(budget.services.all()) == 0:
+        extra = 1
+    ServiceFormSetEdit = inlineformset_factory(
+        Budget,
+        Services,
+        form=ServiceFormSet.form,  # usa o mesmo form
+        extra=extra ,                   # sem formulário vazio
+        can_delete=True
+    )
+    
+    if request.method == 'POST':
+        # cria os forms com instance e prefix corretos
+        form = BudgetForm(request.POST, instance=budget)
+        formset = ServiceFormSetEdit(request.POST, instance=budget, prefix=prefix)
+
+        
+
+        # debug (remova em produção)
+        print('>>> POST - Validando Formulários..\n')
+        
+        if form.is_valid() and formset.is_valid():
+            # salva orçamento
+            
+            print("Formulários validados...\n")
+            budget = form.save(commit=False)
+
+              # mantém dono
+            # budget.save()
+
+            
+            # salva serviços (novos e editados)
+            services_objs = formset.save(commit=False)
+            for s in services_objs:
+                s.budget = budget
+
+                print(f"{'-'*40}\n{s} ")
+                # s.save()
+
+            # deleta itens marcados com DELETE
+            for obj in formset.deleted_objects:
+                obj.delete()
+
+            # finalize formset m2m (não estritamente necessário para FK simples)
+
+            # formset.save_m2m()
+
+            # atualiza total
+            budget.update_total()
+
+            messages.success(request, "Orçamento atualizado com sucesso!")
+
+            # Como você usa AJAX para carregar a tela, retorne o HTML atualizado
+            return redirect("/core")
+        else:
+            # se inválido, re-renderiza o formulário com erros e devolve para o front
+            formset = ServiceFormSet( instance=budget, prefix=prefix)
+            context = {
+                'form': form,
+                'formset': formset,
+                'budget': budget
+            }
+            html = render(request, 'core/budget_edit.html', context).content.decode('utf-8')
+            return JsonResponse({'success': False, 'html': html})
+    
+    else:
+        # GET — apenas monta os forms para exibir
+        form = BudgetForm(instance=budget)
+        formset = ServiceFormSetEdit(instance=budget, prefix=prefix)
+
+        
+        context = {
+            'form': form,
+            'formset': formset,
+            'budget': budget
+        }
+        html = render(request, 'core/budget_edit.html', context).content.decode('utf-8')
+        return JsonResponse({'success': True, 'html': html})
+
+
+

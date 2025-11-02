@@ -45,7 +45,7 @@
 
                     <div class="services-section">
                         <h3>Serviços</h3>
-                        {% if budget.services.all > 0 %}
+                        {% if budget.services.all|length > 0 %}
                         {%for service in budget.services.all %}
 
                         <div class="card border-dark mb-3" style="max-width: 18rem;">

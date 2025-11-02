@@ -1,0 +1,32 @@
+<h2>Editar Orçamento</h2>
+<span>Edite seu orçamento</span>
+
+<form action="{% url 'core:budget_edit' budget_id=budget.id %}" method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <h4 class="mt-4">Serviços</h4>
+
+    <div id="services-forms">
+    {{ formset.management_form }}
+
+    {% for f in formset %}
+        <div class="card card-new-service p-3 mb-3">
+
+            
+
+            {{ f.as_p }}
+            {{ f.subtotal }}
+
+        </div>
+    {% endfor %}
+</div>
+
+    <button type="button" id="add-service" class="btn btn-outline-primary mb-3">Adicionar Serviço</button>
+
+    <div class="buttons-form">
+        <button type="button" class="btn btn-danger"
+            onclick="window.loadContent('budgets', window.initBudgets)">Cancelar</button>
+        <button type="submit" class="btn btn-success">Enviar</button>
+    </div>
+</form>
