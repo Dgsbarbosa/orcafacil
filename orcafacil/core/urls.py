@@ -28,6 +28,8 @@ urlpatterns = [
 
     path('dashboard/budget/edit/<int:budget_id>/',views.budget_edit,name="budget_edit"),
 
+    path('dashboard/budget/delete/<int:budget_id>',views.budget_delete, name='budget_delete')
+
     
 
 ]

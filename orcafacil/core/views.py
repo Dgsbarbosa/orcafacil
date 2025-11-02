@@ -407,4 +407,19 @@ def budget_edit(request, budget_id):
         return JsonResponse({'success': True, 'html': html})
 
 
+@login_required
+def budget_delete(request, budget_id):
 
+    try:
+        budget = get_object_or_404(Budget, pk=budget_id)
+        
+        response = {"success":"success"}
+        budget.delete()
+
+        messages.success(request,"Orçamento deletado com sucesso")
+        
+    except:
+        messages.error(request,"Ocorreu um erro ao deletar o orçamento")
+        response = {"error":"ERROR"}
+    
+    return  JsonResponse(response)

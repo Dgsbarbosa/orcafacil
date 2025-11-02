@@ -21,7 +21,7 @@
       <td>
         <i class="fa-solid fa-pencil edit-budget" data-id="{{ budget.id }}"></i>
         <i class="fa-solid fa-eye view-budget" data-id="{{ budget.id }}"></i>
-        <i class="fa-solid fa-x delete-budget" data-budget_id="{{ budget.id }}"></i>
+        <i class="fa-solid fa-x delete-budget" data-budget_id="{{ budget.id }}" data-information="{{ budget.code }} - {{ budget.title }}"></i>
       </td>
     </tr>
     {% empty %}

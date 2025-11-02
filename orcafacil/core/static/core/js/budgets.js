@@ -28,11 +28,13 @@ document.addEventListener('click', function (e) {
     if (!deleteBtn) return;
 
     const budgetId = deleteBtn.dataset.budget_id;
+
+    const information = deleteBtn.dataset.information;
     if (!budgetId) return;
 
-    if (!confirm("Tem certeza que deseja excluir este orçamento?")) return;
+    if (!confirm(`Tem certeza que deseja excluir este orçamento \n${information}?`)) return;
 
-    fetch(`budget/delete/${budgetId}`, {
+    fetch(`dashboard/budget/delete/${budgetId}`, {
         method: 'POST',
         headers: {
             'X-CSRFToken': getCookie('csrftoken'),
@@ -43,11 +45,12 @@ document.addEventListener('click', function (e) {
         .then(data => {
             if (data.success) {
                 // Recarrega lista de orçamentos
-                window.loadContent('budgets', () => {
-                    window.loadBudgets();
-                });
+                location.reload();
+
             } else {
                 alert("Erro ao excluir: " + (data.error || "Erro desconhecido"));
+                location.reload();
+
             }
         })
         .catch(err => console.error(err));
