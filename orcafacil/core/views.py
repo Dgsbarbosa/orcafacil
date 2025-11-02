@@ -10,19 +10,6 @@ from django.contrib import messages
 
 from django.forms import inlineformset_factory
 
-@login_required
-def budget_edit(request, budget_id):
-    budget = get_object_or_404(Budget, pk=budget_id)
-    prefix = 'services'
-
-    # 🔹 Cria o formset manualmente
-    ServiceFormSetEdit = inlineformset_factory(
-        Budget,
-        Services,
-        form=ServiceFormSet.form,  # usa o mesmo form
-        extra=0,                   # sem formulário vazio
-        can_delete=True
-    )
 
 @login_required
 def dashboard(request):
@@ -225,7 +212,7 @@ def budgets(request):
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         search = request.GET.get('search', '')
         status = request.GET.get('status', '')
-        budgets = Budget.objects.all().order_by('-created_at')
+        budgets = Budget.objects.all().order_by('-code')
 
         if search:
             budgets = budgets.filter(
@@ -349,7 +336,7 @@ def budget_edit(request, budget_id):
         
 
         # debug (remova em produção)
-        print('>>> POST - Validando Formulários..\n')
+        print('\n>>> POST - Validando Formulários..\n')
         
         if form.is_valid() and formset.is_valid():
             # salva orçamento
@@ -358,7 +345,7 @@ def budget_edit(request, budget_id):
             budget = form.save(commit=False)
 
               # mantém dono
-            # budget.save()
+            budget.save()
 
             
             # salva serviços (novos e editados)
@@ -367,7 +354,7 @@ def budget_edit(request, budget_id):
                 s.budget = budget
 
                 print(f"{'-'*40}\n{s} ")
-                # s.save()
+                s.save()
 
             # deleta itens marcados com DELETE
             for obj in formset.deleted_objects:
@@ -375,7 +362,7 @@ def budget_edit(request, budget_id):
 
             # finalize formset m2m (não estritamente necessário para FK simples)
 
-            # formset.save_m2m()
+            formset.save_m2m()
 
             # atualiza total
             budget.update_total()
@@ -384,16 +371,26 @@ def budget_edit(request, budget_id):
 
             # Como você usa AJAX para carregar a tela, retorne o HTML atualizado
             return redirect("/core")
+        
         else:
             # se inválido, re-renderiza o formulário com erros e devolve para o front
-            formset = ServiceFormSet( instance=budget, prefix=prefix)
-            context = {
-                'form': form,
-                'formset': formset,
-                'budget': budget
-            }
-            html = render(request, 'core/budget_edit.html', context).content.decode('utf-8')
-            return JsonResponse({'success': False, 'html': html})
+          
+            messages.error(request,"ERRO: Não foi posivel salvar o orçamento")
+            
+            print("\n❌ ERROS DE VALIDAÇÃO ❌\n")
+            print("→ Form errors:")
+            print(form.errors.as_json())
+            messages.error(request,form.errors.as_text())
+            print("\n→ Formset errors:")
+            for i, f in enumerate(formset.forms):
+                if f.errors:
+                    print(f"Serviço {i}: {f.errors}")
+                    messages.error(request,f'Erro: {f.errors.as_text()}')
+            print("\n→ Non-form errors:", formset.non_form_errors())
+            print("→ Management form errors:", formset.management_form.errors)
+
+
+            return redirect('/core')
     
     else:
         # GET — apenas monta os forms para exibir

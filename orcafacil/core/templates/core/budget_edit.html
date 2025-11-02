@@ -3,7 +3,14 @@
 
 <form action="{% url 'core:budget_edit' budget_id=budget.id %}" method="POST">
     {% csrf_token %}
-    {{ form.as_p }}
+    
+    <h6>{{ budget.code }} - {{ budget.client }} </h6>
+        {{ form.title.label_tag }}
+
+        {{ form.title }}
+        {{ form.status.label_tag}}
+         {{ form.client.as_hidden }}
+    {{ form.status }}
 
     <h4 class="mt-4">Serviços</h4>
 
@@ -11,12 +18,10 @@
     {{ formset.management_form }}
 
     {% for f in formset %}
+        
         <div class="card card-new-service p-3 mb-3">
-
-            
-
+            <h5>Serviço: {{ forloop.counter }}</h5>
             {{ f.as_p }}
-            {{ f.subtotal }}
 
         </div>
     {% endfor %}

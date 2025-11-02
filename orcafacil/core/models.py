@@ -117,14 +117,18 @@ class Services(models.Model):
 
     description = models.TextField(blank=True, null=True, verbose_name='Descrição')
 
-    quantity = models.DecimalField(max_digits=10, decimal_places=2,default=1, verbose_name='Quantidade')
+    quantity = models.DecimalField(max_digits=10, decimal_places=2,default=1, verbose_name='Quantidade', null=True, blank=True)
 
-    unit_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Preço Unitário")
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Preço Unitário",null=True, blank=True)
 
-    subtotal_budget = models.DecimalField(max_digits=10, decimal_places=2,verbose_name='Subtotal')
+    subtotal_budget = models.DecimalField(max_digits=15, decimal_places=2,verbose_name='Subtotal')
 
     def subtotal(self):
-        return self.quantity * self.unit_price
+
+        try:
+            return self.quantity * self.unit_price
+        except:
+            return 0 
     
     def save(self, *args,**kargs):
         self.subtotal_budget = self.subtotal()
