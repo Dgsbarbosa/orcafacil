@@ -232,7 +232,7 @@ def budgets(request):
         search = request.GET.get('search', '')
         status = request.GET.get('status', '')
         budgets = Budget.objects.filter(user=request.user,is_active=True).order_by('-code')
-
+        
         if search:
             budgets = budgets.filter(
                 Q(code__icontains=search) |

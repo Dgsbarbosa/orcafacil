@@ -16,8 +16,14 @@
     <span>Sistema de gestão de orçamentos com cadastro de clientes e acompanhamento de status — ideal para prestadores
         de serviço que desejam centralizar o controle de propostas e negociações. </span>
 
+    {% if not request.user.is_authenticated %}
+
     <a href="{% url 'accounts:register' %}"><button type="button" class="btn btn-primary">Criar Conta Grátis</button>
-        </a>
+    </a>
+    {% else %}
+    <a href="{% url 'core:dashboard' %}"><button type="button" class="btn btn-primary">Acessar</button>
+    </a>
+    {% endif %}
     <a href="#home-plans"><button type="button" class="btn btn-outline-primary">Ver Planos</button>
     </a>
 </section>

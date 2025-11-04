@@ -36,7 +36,9 @@
 
         <h3>Informações Pessoais</h3>
 
-        <form action="">
+        <form action="/accounts/edit_profile" method="POST">
+
+            {% csrf_token %}
             {{ formProfile.as_p }}
             <button type="submit" class="btn btn-success">Salvar Alterações</button>
         </form>
@@ -48,8 +50,11 @@
     <div class="card-body">
         <h3>Informações da Empresa </h3>
 
-        <form action="">
+        <form action="/accounts/edit_company" method="POST">
+            {% csrf_token %}
+            
             {{ formCompany.as_p }}
+
         <button type="submit" class="btn btn-success">Salvar Alterações</button>
         </form>
 

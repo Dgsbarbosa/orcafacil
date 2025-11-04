@@ -1,4 +1,6 @@
 {% load currency %}
+{% load custom_filters %}
+
 
 <header class="content-header">
                 <div>
@@ -14,7 +16,7 @@
 
             <div class="page-content">
                 <div class="client-info-card">
-                    <h2>{{ budget.code}} - {{ budget.title }}</h2>
+                    <h2>{{ budget.code|splitCode}} - {{ budget.title }}</h2>
                     <p><strong>Status:</strong>
                         <span class="status-{{ budget.status }}
 ">

@@ -32,12 +32,17 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
             <li class="nav-item active">
-                <a class="nav-link" href="#home-advantages">Vantagens </a>
+                <a class="nav-link" href="/#home-advantages">Vantagens </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#home-plans">Planos</a>
+                <a class="nav-link" href="/#home-plans">Planos</a>
             </li>
-
+            {% if request.user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'accounts:logout' %}"><button type="button"
+                        class="btn btn-outline-primary">Sair</button></a>
+            </li>
+            {% else %}
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
             </li>
@@ -46,6 +51,8 @@
                         class="btn btn-outline-primary">Começar
                         Grátis</button></a>
             </li>
+
+            {% endif %}
         </ul>
     </div>
 </nav>

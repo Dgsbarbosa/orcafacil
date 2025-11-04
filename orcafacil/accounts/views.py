@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, login,logout
-from .forms import CustomUserForm, LoginForm, CustomUserEditForm
+from .forms import CustomUserForm, LoginForm, CompanyForm,CustomUserEditForm, UserProfileForm
 
 def login_view(request):
 
@@ -20,7 +20,10 @@ def login_view(request):
             return redirect('core:dashboard')
         else:
             messages.error(request, "Usuários e/ou senha inválidas")
-   
+    
+    else:
+        if request.user.is_authenticated:
+            return redirect("/core")
 
     context = {
         
@@ -29,8 +32,9 @@ def login_view(request):
     return render(request, 'accounts/login.html',context)
 
 def logout_view(request):
-
-    return render(request, 'accounts/logout.html')
+    
+    logout(request)
+    return redirect("/core")
 
 def register_view(request):
 
@@ -85,9 +89,10 @@ def edit_access(request):
         if form.is_valid():
 
             form.save()
-            messages.success(request," Teste")
+            messages.success(request," Informações de acesso alterados com sucesso")
         else:
-            errors = form.errors.as_text()
+            errors = form.errors.as_json()
+            print(errors)
             messages.error(request,f"Erro: {errors}")
     else:
         print("error")        
@@ -95,9 +100,38 @@ def edit_access(request):
 
 def edit_profile(request):
 
-    pass
+    user = request.user.userprofile
+
+    if request.method == "POST":
+        form = UserProfileForm(request.POST, instance=user)
+
+        if form.is_valid():
+
+            form.save()
+            messages.success(request,"Informações Pessoais alteradas com sucesso") 
+            return redirect('/core')
+
+        
+        else: 
+            errors = form.errors.as_text()
+            messages.error(request, f"Erro: {errors} ")
 
 def edit_company(request):
 
-    pass
+    user = request.user.company
+
+    if request.method == "POST":
+        form = CompanyForm(request.POST, instance=user)
+
+        if form.is_valid():
+            
+
+            form.save()
+            messages.success(request,"Informações da Empresa alteradas com sucesso") 
+            return redirect('/core')
+
+        
+        else: 
+            errors = form.errors.as_text()
+            messages.error(request, f"Erro: {errors} ")
 

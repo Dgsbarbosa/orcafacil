@@ -89,12 +89,14 @@ class Budget(SoftDeleteModel):
                 next_number = 1
 
             # Monta o código no formato 001-2025
-            self.code = f"{next_number:03d}-{year}"
+            self.code = f"{next_number:03d}-{year}/{self.user.id}"
 
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.code} - {self.title}"
+
+        self.code = self.code.split("/")
+        return f"{self.code[0]} - {self.title}"
     
     def update_total(self):
         total_services = sum(s.subtotal() for s in self.services.all())
