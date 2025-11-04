@@ -10,10 +10,11 @@ from .utils import count_budgets_per_month,pass_rate,atualizar_created_budgets
 from django.template.loader import render_to_string
 from django.db.models import Q
 from django.contrib import messages
-from accounts.forms import UserProfileForm, CompanyForm, LoginForm
+from accounts.forms import UserProfileForm, CompanyForm, LoginForm,CustomUserForm,CustomUserEditForm
 from django.forms import inlineformset_factory
 
 from .utils import normalize_budget_codes
+
 @login_required
 def dashboard(request):
     user = request.user
@@ -99,7 +100,7 @@ def dashboard_content(request, section):
         user = request.user
         profile, _ = UserProfile.objects.get_or_create(user=user)
         company, _ = Company.objects.get_or_create(user=user)
-        formAccess = LoginForm(instance=user)
+        formAccess = CustomUserEditForm(instance=user)
         formProfile = UserProfileForm(instance=profile)
         formCompany = CompanyForm(instance=company)
         context['user']=user

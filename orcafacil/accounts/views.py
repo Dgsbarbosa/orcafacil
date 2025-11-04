@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, login,logout
-from .forms import CustomUserForm, LoginForm
+from .forms import CustomUserForm, LoginForm, CustomUserEditForm
 
 def login_view(request):
 
@@ -73,3 +73,31 @@ def profile_view(request):
 
 def upgrade_plan(request):
     return render(request, 'accounts/upgrade.html')
+
+
+def edit_access(request):
+
+    user = request.user
+
+    if request.method == "POST":
+        form = CustomUserEditForm(request.POST, instance=user)
+        
+        if form.is_valid():
+
+            form.save()
+            messages.success(request," Teste")
+        else:
+            errors = form.errors.as_text()
+            messages.error(request,f"Erro: {errors}")
+    else:
+        print("error")        
+    return redirect("/core")
+
+def edit_profile(request):
+
+    pass
+
+def edit_company(request):
+
+    pass
+

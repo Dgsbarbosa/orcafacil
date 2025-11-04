@@ -3,24 +3,55 @@
 
 
 <div class="card user-profile">
-<div class="card-body">
-    <h3>Informações de acesso </h3>
-    {{ formAccess.as_p }}
-</div>
+    <div class="card-body">
+
+
+        <h3>Informações de acesso </h3>
+
+        <form action="/accounts/edit_access" method="POST">
+
+            {% csrf_token %}
+            {{ formAccess.first_name.label_tag }}
+            {{ formAccess.first_name }}
+            <br>
+            {{ formAccess.last_name.label_tag }}
+            {{ formAccess.last_name }}
+            {{ formAccess.email.label_tag }}
+            {{ formAccess.email }}
+            {{ formAccess.accept_email.label_tag }}
+            {{ formAccess.accept_email }}
+            
+            <button type="submit" class="btn btn-success">Salvar Alterações</button>
+        </form>
+
+    </div>
+    <div class="card-footer">
+            <button type="button" class="btn btn-primary"> Alterar Senha</button>
+
+    </div>
 </div>
 
 <div class="card personal-profile">
     <div class="card-body">
-        <h3>Informações Pessoais</h3>
-    {{ formProfile.as_p }}
 
-    </div> 
+        <h3>Informações Pessoais</h3>
+
+        <form action="">
+            {{ formProfile.as_p }}
+            <button type="submit" class="btn btn-success">Salvar Alterações</button>
+        </form>
+
+    </div>
 </div>
 
 <div class="card professional-profile">
-<div class="card-body">
-    <h3>Informações da Empresa </h3>
-    {{ formCompany.as_p }}
+    <div class="card-body">
+        <h3>Informações da Empresa </h3>
 
-</div>
+        <form action="">
+            {{ formCompany.as_p }}
+        <button type="submit" class="btn btn-success">Salvar Alterações</button>
+        </form>
+
+    </div>
 </div>
