@@ -26,3 +26,15 @@ nav{
 i{
   cursor: pointer;
 }
+
+.arrow{
+  display: flex;
+  color: blue;
+  flex-direction: column;
+  position: fixed;
+  bottom: 30px;
+}
+
+.arrow-element{
+  font-size: 30px;
+}

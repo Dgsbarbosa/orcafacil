@@ -33,8 +33,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
-    accept_email = models.BooleanField(default=False)
-    accept_terms = models.BooleanField(default=False)
+    accept_email = models.BooleanField(default=False, verbose_name="Aceito receber emails")
+    accept_terms = models.BooleanField(default=False, verbose_name="Aceito os termos ", null=False, blank=False)
     objects = CustomUserManager()
     created_at = models.DateField(auto_now_add=True)
     USERNAME_FIELD = 'email'

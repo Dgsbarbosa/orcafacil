@@ -53,9 +53,10 @@ def register_view(request):
             return redirect(reverse_lazy('accounts:login'))
 
         else:
-            errors = form.errors.as_data()
+            errors = form.errors
             
             for field, error in errors.items():
+                field = field.capitalize()
                 for e in error:
                     messages.error(request,f"{field}: {e}")
                     print(error)
