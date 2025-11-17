@@ -3,10 +3,10 @@ from .models import UserProfile,CustomUser,Company
 
 class CustomUserForm(forms.ModelForm):
     
-    confirm_password = forms.EmailField(
+    confirm_password = forms.Field(
         label = "Confirme sua senha",
         required=True,
-        widget=forms.EmailInput(
+        widget=forms.TextInput(
             attrs={
                 'placeholder' : "Confirme sua senha",
 

@@ -9,3 +9,14 @@ window.loadContent = function (section, callback = null) {
         })
         .catch(err => console.error("Erro ao carregar conteúdo:", err));
 };
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form");
+    form.addEventListener("submit", function (event) {
+        if (!form.checkValidity()) {
+            event.preventDefault(); // Impede envio
+            form.reportValidity();  // Mostra o erro nativo do navegador
+        }
+    });
+});

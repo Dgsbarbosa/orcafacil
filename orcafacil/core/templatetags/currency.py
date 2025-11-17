@@ -4,8 +4,13 @@ register = template.Library()
 
 @register.filter
 def currency(value):
+
+    
     try:
-        value = float(value)
+        if value:
+            value = float(value)
+        else:
+            value = 0
         formatted = f"R$ {value:,.2f}"
 
         formatted = formatted.replace(',','X').replace('.',',').replace('X','.')

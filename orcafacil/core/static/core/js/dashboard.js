@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Carrega seção inicial
-    loadSection('profile');
+    loadSection('home');
 
     menuItems.forEach(item => {
         item.addEventListener('click', () => {

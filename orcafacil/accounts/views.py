@@ -58,9 +58,8 @@ def register_view(request):
             for field, error in errors.items():
                 field = field.capitalize()
                 for e in error:
-                    messages.error(request,f"{field}: {e}")
+                    messages.error(request,f" {e}")
                     print(error)
-            print(errors)
             # messages.error(request,"")
         
 

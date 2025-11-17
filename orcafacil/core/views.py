@@ -1,17 +1,19 @@
 # IMPORTAÇÕES
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render,redirect
 from django.contrib.auth.decorators import login_required
-
+from django.template.loader import get_template
 from accounts.models import Company, UserProfile
 from .models import Budget, Client,Services,Material
 from .forms import ClientForm, BudgetForm, ServiceFormSet,MaterialFormSet
+from xhtml2pdf import pisa
 from .utils import count_budgets_per_month,pass_rate,atualizar_created_budgets
 from django.template.loader import render_to_string
 from django.db.models import Q
 from django.contrib import messages
 from accounts.forms import UserProfileForm, CompanyForm, LoginForm,CustomUserForm,CustomUserEditForm
 from django.forms import inlineformset_factory
+# from weasyprint import HTML
 
 from .utils import normalize_budget_codes
 
@@ -443,6 +445,7 @@ def budget_edit(request, budget_id):
 @login_required
 def budget_delete(request, budget_id):
 
+
     try:
         budget = get_object_or_404(Budget, pk=budget_id)
         
@@ -456,3 +459,44 @@ def budget_delete(request, budget_id):
         response = {"error":"ERROR"}
     
     return  JsonResponse(response)
+
+@login_required
+def view_report(request,pk):
+
+    budget = get_object_or_404(Budget, id=pk)
+    services = budget.services.all()
+    materials = budget.materials.all()
+
+    context = {
+        "budget": budget,
+        "services": services,
+        "materials": materials,
+    }
+
+    return render(request, "core/report.html", context)
+    
+@login_required
+def download_report(request, pk):
+    budget = Budget.objects.get(id=pk)
+    services = budget.services.all()
+    materials = budget.materials.all()
+
+    template = get_template('core/report.html')
+
+    html = template.render({
+        'budget': budget,
+        'services': services,
+        'materials': materials,
+    })
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="orcamento-{budget.code}.pdf"'
+
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Erro ao gerar PDF', status=500)
+
+    return response
+
+

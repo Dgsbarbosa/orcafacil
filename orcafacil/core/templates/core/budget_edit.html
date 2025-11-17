@@ -45,6 +45,18 @@
     <div class="buttons-form">
         <button type="button" class="btn btn-danger"
             onclick="window.loadContent('budgets', window.initBudgets)">Cancelar</button>
+
         <button type="submit" class="btn btn-success">Salvar</button>
+        
+       
+            
+               <button class="btn btn-secondary">
+                   <a href="{% url 'core:view_pdf' budget.id %}" target="_blank" style="text-decoration: none; color: white;">
+                    Ver Impressão PDF</a>
+               </button>
+            
+        
+        
+
     </div>
 </form>

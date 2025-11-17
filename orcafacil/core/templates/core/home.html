@@ -109,7 +109,7 @@
     <tr>
       <td>{{ budget.client }}</td>
       <td>{{ budget.title }}</td>
-      <td>{{ budget.value|currency }}</td>
+      <td>{{ budget.total_value|currency }}</td>
       <td><span class="badge status-{{ budget.status }}">{{ budget.status }}</span></td>
       <td>{{ budget.created_at|date:"j/m/Y " }}</td>
     </tr>

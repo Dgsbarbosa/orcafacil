@@ -1,40 +1,242 @@
-*, body{
+/* ============================
+   RESET / BASE
+=============================*/
+*, *::before, *::after {
     padding: 0;
     margin: 0;
-  
+    box-sizing: border-box;
 }
 
+/* ============================
+   PALETA DE CORES – PROFISSIONAL
+=============================*/
+:root {
+    --primary: #4A63E7;
+    --primary-light: #7C8CFA;
+    --primary-dark: #001aff;
 
-span{
-    color: rgb(17, 0, 255);
+    --bg: #F4F5F7;
+    --white: #ffffff;
+
+    --text: #1F1F1F;
+    --text-light: #555;
+    
+    --success: #2ECC71;
+    --warning: #F1C40F;
+    --danger: #E74C3C;
+
+    --card-radius: 14px;
+
+    --shadow-sm: 0 2px 6px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
+}
+
+body {
+    font-family: "Inter", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding-top: 80px; /* espaço por causa do nav fixo */
+    line-height: 1.5;
+}
+
+/* ============================
+   NAVBAR FIXA
+=============================*/
+nav.navbar {
+  /* border: 1px solid wheat; */
+    position: fixed !important;
+    top: 0;
+    width: 100%;
+    z-index: 999;
+    box-shadow: var(--shadow-sm);
+    background: var(--primary-dark) !important;
+    color: var(--white);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+
+}
+
+/* Marca do nav */
+.navbar-brand {
+    font-weight: 700;
+    color: var(--white) !important;
+}
+
+.navbar-nav{
+  align-items: center;
+}
+
+.navbar-collapse{
+  border: 1px solid wheat;
+  
+
+}
+
+/* Links do menu */
+.nav-link {
+    font-weight: 500;
+    color: var(--white) !important;
+}
+
+.nav-link .btn{
+  color: var(--white);
+  /* border-color: var(--white); */
+  background-color: #2ECC71;
+  float: right;
+}
+
+.navbar-toggler-icon{
+  color: var(--white);
+  border-color: var(--white);
+}
+.nav-link:hover {
+    color: var(--warning) !important;
+}
+
+/* ============================
+   MENSAGENS
+=============================*/
+.messages {
+    margin-top: 20px;
+    padding: 0 20px;
 }
 
 .alert {
-  transition: opacity 0.5s ease, transform 0.5s ease;
+    border-radius: 10px;
+    box-shadow: var(--shadow-sm);
+    transition: opacity .5s, transform .5s;
 }
 
 .alert.hide {
-  opacity: 0;
-  transform: translateY(-10px);
+    opacity: 0;
+    transform: translateY(-10px);
 }
 
-nav{
-    border: 1px solid red;
+/* ============================
+   ÍCONES & ELEMENTOS
+=============================*/
+i {
+    cursor: pointer;
+}
+
+/* Botão Topo */
+.arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     position: fixed;
+    color: var(--primary);
+    right: 20px;
+    bottom: 30px;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-i{
-  cursor: pointer;
+.arrow-element {
+    font-size: 36px;
+    animation: bounce 1.5s infinite;
 }
 
-.arrow{
-  display: flex;
-  color: blue;
-  flex-direction: column;
-  position: fixed;
-  bottom: 30px;
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
 }
 
-.arrow-element{
-  font-size: 30px;
+/* ============================
+   DASHBOARD — CARDS
+=============================*/
+.card {
+    border: none !important;
+    border-radius: var(--card-radius);
+    background: var(--white);
+    box-shadow: var(--shadow-md);
+    transition: .2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-title {
+    font-size: 1rem;
+    color: var(--text-light);
+}
+
+.card-text {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+/* ============================
+   TABELAS
+=============================*/
+.table-budgets table {
+    background: var(--white);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+thead.table-light {
+    background: var(--primary) !important;
+    color: var(--white) !important;
+}
+
+.table-hover tbody tr:hover {
+    background: #EEF1FF;
+}
+
+/* Status */
+.status-aprovado, .status-aprovada {
+    background: #C7F3D4;
+    color: #20783A;
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+.status-pendente, .status-pendentes {
+    background: #FFE9A8;
+    color: #8A7300;
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+.status-recusado, .status-negado {
+    background: #FFCBC4;
+    color: #8A1E17;
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+/* ============================
+   BOTÕES
+=============================*/
+.btn-outline-primary {
+    border-color: var(--primary);
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.btn-outline-primary:hover {
+    background: var(--primary);
+    color: #fff;
+}
+
+/* ============================
+   RESPONSIVO
+=============================*/
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.1rem;
+    }
+
+    .card-text {
+        font-size: 1.4rem;
+    }
+
+    body {
+        padding-top: 100px;
+    }
 }
