@@ -9,7 +9,7 @@ from .forms import ClientForm, BudgetForm, ServiceFormSet,MaterialFormSet
 from xhtml2pdf import pisa
 from .utils import count_budgets_per_month,pass_rate,atualizar_created_budgets
 from django.template.loader import render_to_string
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.contrib import messages
 from accounts.forms import UserProfileForm, CompanyForm, LoginForm,CustomUserForm,CustomUserEditForm
 from django.forms import inlineformset_factory
@@ -468,10 +468,22 @@ def view_report(request,pk):
     services = budget.services.all()
     materials = budget.materials.all()
 
+    # Calcule o total dos serviços
+    total_services = budget.services.aggregate(total=Sum("subtotal_services"))['total'] or 0
+
+    # Calcule o total dos materiais
+    total_materials = budget.materials.aggregate(total=Sum("subtotal_material"))['total'] or 0
+
+
+    print(total_services)
+    print(total_materials)
+    
     context = {
         "budget": budget,
         "services": services,
         "materials": materials,
+        "total_services":total_services,
+        "total_materials":total_materials
     }
 
     # print(request.user.userprofile.plan)

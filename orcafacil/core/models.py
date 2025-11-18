@@ -118,7 +118,7 @@ class Services(models.Model):
 
     unit_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Preço Unitário",null=True, blank=True)
 
-    subtotal_budget = models.DecimalField(max_digits=15, decimal_places=2,verbose_name='Subtotal')
+    subtotal_services = models.DecimalField(max_digits=15, decimal_places=2,verbose_name='Subtotal')
 
     def subtotal(self):
 

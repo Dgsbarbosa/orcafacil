@@ -5,11 +5,7 @@
 <style>
     /* ===== RESET PARA XHTML2PDF ===== */
     /* Ele cria bordas automáticas → zeramos todas */
-    table,
-    th,
-    td {
-        border: none !important;
-    }
+    
 
     /* Remove bordas involuntárias no container */
     .view-print {
@@ -18,6 +14,10 @@
         font-family: Helvetica, Arial, sans-serif;
         font-size: 12px;
         color: #000;
+    }
+
+    .view-print table{
+
     }
 
     .company-header {
@@ -50,13 +50,15 @@
         font-size: 15px;
 
     }
-.datas-client p{
+
+    .datas-client p {
         /* border: 1px solid #000 !important; */
         margin-bottom: 2px;
         margin-top: 6px;
         font-size: 18px;
 
-}
+    }
+
     /* Caixa de seção */
     .section-title {
         background: #eee;
@@ -82,10 +84,58 @@
         padding: 5px;
         vertical-align: top;
     }
+.print-table td:first-child {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    max-width: 250px; /* opcional: limite de largura */
+}
 
-    table.print-table th {
+    .print-table tr td {
         /* background: #f2f2f2; */
+
+        border-bottom: 1px solid #6b6b6b;
     }
+
+    .resume-values,
+    .resume-values p {
+        /* border: 1px solid rgb(255, 0, 0); */
+        display: flex;
+        justify-content: right;
+        margin-top: 20px;
+    }
+
+    .resume-values table{
+        /* border: 1px solid rgb(88, 236, 2); */
+        width: 60%;
+        border-collapse: collapse;
+        
+
+    }
+    .resume-values tr {
+        /* border: 1px solid black; */
+        background-color:#eee;
+        
+    }
+    .resume-values tr:last-child {
+        /* border: 1px solid black; */
+        background-color:#dadada;
+        font-weight: bolder;
+        
+    }
+    .resume-values td {
+        /* border: 1px solid black; */
+        padding: 5px;
+    }
+    .resume-values td:nth-child(2){
+        /* border: 1px solid rgb(17, 52, 255); */
+        width: 100px;
+        text-align:right;
+
+        
+    }
+
+
 
     .footer {
         margin-top: 30px;
@@ -100,7 +150,7 @@
 
 <div class="container view-print" id="area-pdf">
 
-    <!-- ========================= CABEÇALHO ========================= -->
+    <!-- = CABEÇALHO = -->
     <div class="company-header">
 
         {% if request.user.userprofile.plan == 'pro' %}
@@ -118,39 +168,40 @@
 
 
 
-    <!-- ========================= TÍTULO ========================= -->
-     <div>
-         
-             <h2 class="budget-title">ORÇAMENTO {{ budget.code }} <span class="text-muted budget-title-span"> | {{ budget.title  }}</span></h2>
-     </div>
+    <!-- = TÍTULO = -->
+    <div>
+
+        <h2 class="budget-title">ORÇAMENTO {{ budget.code }} <span class="text-muted budget-title-span"> | 
+            {{  budget.title }}</span></h2>
+    </div>
 
 
-    <!-- ========================= CLIENTE ========================= -->
+    <!-- = CLIENTE = -->
 
-<div class="datas-client">
-    
+    <div class="datas-client">
+
         <p style="font-weight: bolder;">Cliente: {{ budget.client.name }} {{ budget.client.lastname }}</p>
         <p>CNPJ: criar no model </p>
         <p>{{ budget.client.street }}, {{ budget.client.neighborhood }} </p>
-        <p>{{ budget.client.city }} - {{ budget.client.state }} | CEP  {{ budget.client.zipcode }}</p>
+        <p>{{ budget.client.city }} - {{ budget.client.state }} | CEP {{ budget.client.zipcode }}</p>
         <p> </p>
-    
-    
-    
+
+
+
         <p>Telefone: {{ budget.client.phone }}</p>
         <p>Email: {{ budget.client.email }}</p>
-    
-</div>
 
- <div class="section-title">INFORMAÇÕES BÁSICAS</div>
+    </div>
 
- <h1>to do </h1>
-   <!-- ========================= SERVIÇOS ========================= -->
+    <div class="section-title">INFORMAÇÕES BÁSICAS</div>
+
+    <h1>to do </h1>
+    <!-- = SERVIÇOS = -->
     <div class="section-title">SERVIÇOS</div>
 
     <table class="print-table">
         <tr>
-            
+
             <th style="text-align: left;">Descrição</th>
             <th style="text-align: center;">Preço unitário</th>
 
@@ -160,7 +211,7 @@
 
         {% for s in services %}
         <tr>
-        
+
             <td>
                 <p style="margin-bottom: 5px;"><strong>{{ s.service }}</strong></p>
                 <p style="margin-top: 5px;">{{ s.description|linebreaksbr }}</p>
@@ -172,52 +223,91 @@
 
             <td style="text-align: center;">
                 {% if s.quantity %}{{ s.quantity }}{% endif %}</td>
-            <td style="text-align: right;">{{ s.subtotal_budget|currency }}</td>
+            <td style="text-align: right;">{{ s.subtotal_services|currency }}</td>
         </tr>
         {% endfor %}
     </table>
 
 
-    <!-- ========================= MATERIAIS ========================= -->
+    <!-- = MATERIAIS = -->
     <div class="section-title">Materiais</div>
 
     <table class="print-table">
         <tr>
-            <th>Material</th>
-            <th>Descrição</th>
-            <th>Qtd</th>
-            <th>Preço Unitário</th>
-            <th>Subtotal</th>
+
+            <th style="text-align: left;">Descrição</th>
+            <th style="text-align: center;">Unidade</th>
+            <th style="text-align: center;">Preço Unitário</th>
+            <th>Quantidade</th>
+
+            <th style="text-align: right;">Valor </th>
         </tr>
 
         {% for m in materials %}
         <tr>
-            <td>{{ m.name }}</td>
-            <td>{{ m.description }}</td>
-            <td>{% if m.quantity %}{{ m.quantity }}{% endif %}</td>
-            <td>{{ m.unit_price|currency }}</td>
-            <td>{{ m.subtotal_material|currency }}</td>
+            <td>
+                <p style="margin-bottom: 5px;"><strong>{{ m.name }}</strong></p>
+                <p style="margin-top: 5px;">{{ m.description|linebreaksbr }}</p>
+            </td>
+
+            <td style="text-align: center;">to do</td>
+            <td style="text-align: center;">{% if m.quantity %}{{ m.quantity }}{% endif %}</td>
+            <td style="text-align: center;">{{ m.unit_price|currency }}</td>
+            <td style="text-align: right;">{{ m.subtotal_material|currency }}</td>
         </tr>
         {% endfor %}
     </table>
 
 
-    <!-- ========================= VALOR TOTAL ========================= -->
-    <div class="section-title">Total Geral</div>
-    <p style="font-size: 15px; font-weight: bold;">
-        {{ budget.total_value|currency }}
-    </p>
 
 
-    <!-- ========================= OBSERVAÇÕES ========================= -->
+    <div class="resume-values" style="width: 100%;">
+
+        <table>
+            
+            <tr>
+                <td>Serviços</td>
+                <td >{{ total_services|currency }}</td>
+                
+            </tr>
+            <tr>
+                <td>Materiais</td>
+                <td>{{ total_materials|currency }}</td>
+                
+            </tr>
+
+            <tr>
+                <td>Total    </td>
+                <td>{{ budget.total_value|currency }}</td>
+            
+            </tr>
+
+        </table>
+
+    </div>
+
+    <div class="section-title">Pagamentos</div>
+<h1>to do</h1>
+    <!-- = OBSERVAÇÕES = -->
     {% if budget.obs %}
     <div class="section-title">Observações</div>
     <p>{{ budget.obs }}</p>
     {% endif %}
 
-     <p><strong></strong> {{ budget.created_at|date:"d/m/Y" }}</p>
+    <div>
+        <p style="text-align: center; font-weight: bolder;"> {{ budget.created_at|date:"d/m/Y" }}
+        </p>
+    </div>
+    <div style="display: flex; justify-content: center; padding-top: 50px;">
+        <div style="border-top: 1px solid #000;text-align: center; width: 50%; padding-top: 0;">
+            <p style="margin: 2px 0; font-weight: bolder; padding-top: 0px;">{{ request.user.company.company_name }}</p>
+            <p style="margin-top: 0;">{{ request.user.first_name }} {{ request.user.last_name }}</p>
 
-    <!-- ========================= RODAPÉ ========================= -->
+        </div>
+    </div>
+
+
+    <!-- = RODAPÉ = -->
 
     <div class="footer">
         {% if request.user.plan == 'pro' %}
