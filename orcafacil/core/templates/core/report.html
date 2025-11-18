@@ -3,174 +3,235 @@
 
 {% block extra_css %}
 <style>
+    /* ===== RESET PARA XHTML2PDF ===== */
+    /* Ele cria bordas automáticas → zeramos todas */
+    table,
+    th,
+    td {
+        border: none !important;
+    }
 
-  /* ===== RESET PARA XHTML2PDF ===== */
-  /* Ele cria bordas automáticas → zeramos todas */
-  table, th, td {
-      border: none !important;
-  }
+    /* Remove bordas involuntárias no container */
+    .view-print {
+        border: none !important;
+        padding: 20px;
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 12px;
+        color: #000;
+    }
 
-  /* Remove bordas involuntárias no container */
-  .view-print {
-      border: none !important;
-      padding: 20px;
-      font-family: Helvetica, Arial, sans-serif;
-      font-size: 12px;
-      color: #000;
-  }
+    .company-header {
+        text-align: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border: none !important;
+    }
 
-  .company-header {
-      text-align: center;
-      margin-bottom: 15px;
-      padding-bottom: 10px;
-      border: none !important;
-  }
+    .company-header h1 {
+        font-size: 18px;
+        margin: 0;
+        padding: 0;
+    }
 
-  .company-header h1 {
-      font-size: 18px;
-      margin: 0;
-      padding: 0;
-  }
+    .budget-title,
+    .budget-title-span {
+        /* border: 1px solid black; */
+        display: flex;
+        align-items: center;
+        background: #eee;
+        height: 40px;
+        padding-left: 10px;
 
-  /* Caixa de seção */
-  .section-title {
-      background: #eee;
-      border: 1px solid #000 !important;
-      padding: 6px;
-      font-weight: bold;
-      margin-top: 22px;
-      margin-bottom: 5px;
-  }
+    }
 
-  /* Tabelas principais */
-  table.print-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 5px;
-  }
+    .budget-title-span {
 
-  /* Agora aplicamos borda SOMENTE onde queremos */
-  table.print-table th,
-  table.print-table td {
-      border: 1px solid #000 !important;
-      padding: 5px;
-      vertical-align: top;
-  }
+        color: #6b6b6b;
+        font-size: 15px;
 
-  table.print-table th {
-      background: #f2f2f2;
-  }
+    }
+.datas-client p{
+        /* border: 1px solid #000 !important; */
+        margin-bottom: 2px;
+        margin-top: 6px;
+        font-size: 18px;
 
-  .footer {
-      margin-top: 30px;
-      text-align: center;
-      font-size: 11px;
-      border-top: 1px solid #000 !important;
-      padding-top: 10px;
-  }
+}
+    /* Caixa de seção */
+    .section-title {
+        background: #eee;
+        /* border: 1px solid #000 !important; */
+        padding: 6px;
+        font-weight: bolder;
+        margin-top: 22px;
+        margin-bottom: 5px;
+        font-size: 18px;
+    }
 
+    /* Tabelas principais */
+    table.print-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 5px;
+    }
+
+    /* Agora aplicamos borda SOMENTE onde queremos */
+    table.print-table th,
+    table.print-table td {
+        /* border: 1px solid #000 !important; */
+        padding: 5px;
+        vertical-align: top;
+    }
+
+    table.print-table th {
+        /* background: #f2f2f2; */
+    }
+
+    .footer {
+        margin-top: 30px;
+        text-align: center;
+        font-size: 11px;
+        border-top: 1px solid #000 !important;
+        padding-top: 10px;
+    }
 </style>
 {% endblock %}
 
 
 <div class="container view-print" id="area-pdf">
 
-  <!-- ========================= CABEÇALHO ========================= -->
-  <div class="company-header">
-      <h1>Novo Padrão Reforma e Manutenção Predial</h1>
-      <div>DOUGLAS ALEXANDRE BARBOSA 36813601890</div>
-      <div>CNPJ: 37.763.872/0001-11 - CEP: 17033-810</div>
-      <div>E-mail: novopadrao.reformas@gmail.com</div>
-      <div>Telefone: (14) 99734-9757 / (14) 99198-0130</div>
-  </div>
+    <!-- ========================= CABEÇALHO ========================= -->
+    <div class="company-header">
 
-  <!-- ========================= TÍTULO ========================= -->
-  <h2 style="text-align:center; margin-top:5px;">Orçamento {{ budget.code }}</h2>
+        {% if request.user.userprofile.plan == 'pro' %}
 
+        <h1>Novo Padrão Reforma e Manutenção Predial</h1>
+        <div>DOUGLAS ALEXANDRE BARBOSA 36813601890</div>
+        <div>CNPJ: 37.763.872/0001-11 - CEP: 17033-810</div>
+        <div>E-mail: novopadrao.reformas@gmail.com</div>
+        <div>Telefone: (14) 99734-9757 / (14) 99198-0130</div>
 
-  <!-- ========================= CLIENTE ========================= -->
-  <div class="section-title">Dados do Cliente</div>
-
-  <p><strong>Nome:</strong> {{ budget.client.name }} {{ budget.client.lastname }}</p>
-  <p><strong>Telefone:</strong> {{ budget.client.phone }}</p>
-  <p><strong>Email:</strong> {{ budget.client.email }}</p>
+        {% else %}
+        <img src="{% static 'core/images/marca_dagua.png'  %}" alt="" width="100%">
+        {% endif %}
+    </div>
 
 
-  <!-- ========================= INFORMAÇÕES DO ORÇAMENTO ========================= -->
-  <div class="section-title">Informações</div>
-  <p><strong>Título:</strong> {{ budget.title }}</p>
-  <p><strong>Status:</strong> {{ budget.get_status_display }}</p>
-  <p><strong>Data:</strong> {{ budget.created_at|date:"d/m/Y" }}</p>
+
+    <!-- ========================= TÍTULO ========================= -->
+     <div>
+         
+             <h2 class="budget-title">ORÇAMENTO {{ budget.code }} <span class="text-muted budget-title-span"> | {{ budget.title  }}</span></h2>
+     </div>
 
 
-  <!-- ========================= SERVIÇOS ========================= -->
-  <div class="section-title">Serviços</div>
+    <!-- ========================= CLIENTE ========================= -->
 
-  <table class="print-table">
-      <tr>
-          <th>Serviço</th>
-          <th>Descrição</th>
-          <th>Qtd</th>
-          <th>Preço Unitário</th>
-          <th>Subtotal</th>
-      </tr>
+<div class="datas-client">
+    
+        <p style="font-weight: bolder;">Cliente: {{ budget.client.name }} {{ budget.client.lastname }}</p>
+        <p>CNPJ: criar no model </p>
+        <p>{{ budget.client.street }}, {{ budget.client.neighborhood }} </p>
+        <p>{{ budget.client.city }} - {{ budget.client.state }} | CEP  {{ budget.client.zipcode }}</p>
+        <p> </p>
+    
+    
+    
+        <p>Telefone: {{ budget.client.phone }}</p>
+        <p>Email: {{ budget.client.email }}</p>
+    
+</div>
 
-      {% for s in services %}
-      <tr>
-          <td>{{ s.service }}</td>
-          <td>{{ s.description }}</td>
-          <td>{% if s.quantity %}{{ s.quantity }}{% endif %}</td>
-          <td>{{ s.unit_price|currency }}</td>
-          <td>{{ s.subtotal_budget|currency }}</td>
-      </tr>
-      {% endfor %}
-  </table>
+ <div class="section-title">INFORMAÇÕES BÁSICAS</div>
 
+ <h1>to do </h1>
+   <!-- ========================= SERVIÇOS ========================= -->
+    <div class="section-title">SERVIÇOS</div>
 
-  <!-- ========================= MATERIAIS ========================= -->
-  <div class="section-title">Materiais</div>
+    <table class="print-table">
+        <tr>
+            
+            <th style="text-align: left;">Descrição</th>
+            <th style="text-align: center;">Preço unitário</th>
 
-  <table class="print-table">
-      <tr>
-          <th>Material</th>
-          <th>Descrição</th>
-          <th>Qtd</th>
-          <th>Preço Unitário</th>
-          <th>Subtotal</th>
-      </tr>
+            <th style="text-align: center;">Quantidade</th>
+            <th style="text-align: right;">Valor</th>
+        </tr>
 
-      {% for m in materials %}
-      <tr>
-          <td>{{ m.name }}</td>
-          <td>{{ m.description }}</td>
-          <td>{% if m.quantity %}{{ m.quantity }}{% endif %}</td>
-          <td>{{ m.unit_price|currency }}</td>
-          <td>{{ m.subtotal_material|currency }}</td>
-      </tr>
-      {% endfor %}
-  </table>
+        {% for s in services %}
+        <tr>
+        
+            <td>
+                <p style="margin-bottom: 5px;"><strong>{{ s.service }}</strong></p>
+                <p style="margin-top: 5px;">{{ s.description|linebreaksbr }}</p>
+            </td>
 
+            <td style="text-align: center;">{{ s.unit_price|currency }}
 
-  <!-- ========================= VALOR TOTAL ========================= -->
-  <div class="section-title">Total Geral</div>
-  <p style="font-size: 15px; font-weight: bold;">
-    R$ {{ budget.total_value }}
-  </p>
+            </td>
+
+            <td style="text-align: center;">
+                {% if s.quantity %}{{ s.quantity }}{% endif %}</td>
+            <td style="text-align: right;">{{ s.subtotal_budget|currency }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 
 
-  <!-- ========================= OBSERVAÇÕES ========================= -->
-  {% if budget.obs %}
-  <div class="section-title">Observações</div>
-  <p>{{ budget.obs }}</p>
-  {% endif %}
+    <!-- ========================= MATERIAIS ========================= -->
+    <div class="section-title">Materiais</div>
+
+    <table class="print-table">
+        <tr>
+            <th>Material</th>
+            <th>Descrição</th>
+            <th>Qtd</th>
+            <th>Preço Unitário</th>
+            <th>Subtotal</th>
+        </tr>
+
+        {% for m in materials %}
+        <tr>
+            <td>{{ m.name }}</td>
+            <td>{{ m.description }}</td>
+            <td>{% if m.quantity %}{{ m.quantity }}{% endif %}</td>
+            <td>{{ m.unit_price|currency }}</td>
+            <td>{{ m.subtotal_material|currency }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 
 
-  <!-- ========================= RODAPÉ ========================= -->
-  <div class="footer">
-    Facebook: novopadrao.reformas • Instagram: @novopadrao.reformas  
-    <br>
-    Obrigado pela confiança!  
-  </div>
+    <!-- ========================= VALOR TOTAL ========================= -->
+    <div class="section-title">Total Geral</div>
+    <p style="font-size: 15px; font-weight: bold;">
+        {{ budget.total_value|currency }}
+    </p>
+
+
+    <!-- ========================= OBSERVAÇÕES ========================= -->
+    {% if budget.obs %}
+    <div class="section-title">Observações</div>
+    <p>{{ budget.obs }}</p>
+    {% endif %}
+
+     <p><strong></strong> {{ budget.created_at|date:"d/m/Y" }}</p>
+
+    <!-- ========================= RODAPÉ ========================= -->
+
+    <div class="footer">
+        {% if request.user.plan == 'pro' %}
+
+        Facebook: novopadrao.reformas • Instagram: @novopadrao.reformas
+        <br>
+        Obrigado pela confiança!
+
+        {% else %}
+
+        <img src="{% static 'core/images/marca_dagua.png'  %}" alt="" width="100%">
+
+        {% endif %}
+    </div>
 
 </div>
 
@@ -179,27 +240,27 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
 <script>
 
-document.getElementById("btnDownloadPdf").addEventListener("click", () => {
+    document.getElementById("btnDownloadPdf").addEventListener("click", () => {
 
-    const element = document.getElementById("area-pdf");
+        const element = document.getElementById("area-pdf");
 
-    const options = {
-        margin:       5,
-        filename:     "orcamento-{{ budget.code }}.pdf",
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  {
-            scale: 2,            // aumenta nitidez
-            useCORS: true
-        },
-        jsPDF:        {
-            unit: 'mm',
-            format: 'a4',
-            orientation: 'portrait'
-        }
-    };
+        const options = {
+            margin: 5,
+            filename: "orcamento-{{ budget.code }}.pdf",
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: {
+                scale: 2,            // aumenta nitidez
+                useCORS: true
+            },
+            jsPDF: {
+                unit: 'mm',
+                format: 'a4',
+                orientation: 'portrait'
+            }
+        };
 
-    html2pdf().set(options).from(element).save();
-});
+        html2pdf().set(options).from(element).save();
+    });
 
 </script>
 

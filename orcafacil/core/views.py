@@ -272,6 +272,7 @@ def budget_create(request):
             budget.user = user 
             
             print("Salvando Formulário...")
+            
             budget.save()
 
             services = formset.save(commit=False)
@@ -472,6 +473,8 @@ def view_report(request,pk):
         "services": services,
         "materials": materials,
     }
+
+    # print(request.user.userprofile.plan)
 
     return render(request, "core/report.html", context)
     
