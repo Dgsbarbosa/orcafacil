@@ -1,0 +1,50 @@
+@page {
+    size: A4;
+    margin: 25mm 15mm 25mm 15mm;
+
+    @top-center {
+        content: element(globalHeader);
+    }
+
+    @bottom-center {
+        content: element(globalFooter);
+    }
+}
+
+#global-header {
+    position: running(globalHeader);
+}
+
+#global-footer {
+    position: running(globalFooter);
+}
+
+.header-box {
+    text-align: center;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.footer-box {
+    text-align: center;
+    font-size: 10px;
+    border-top: 1px solid #aaa;
+    padding-top: 5px;
+    margin-top: 10px;
+}
+
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 12px;
+}
+
+.print-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.print-table th,
+.print-table td {
+    padding: 5px;
+    border-bottom: 1px solid #aaa;
+}

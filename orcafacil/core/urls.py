@@ -29,9 +29,13 @@ urlpatterns = [
     path('dashboard/budget/edit/<int:budget_id>/',views.budget_edit,name="budget_edit"),
 
     path('dashboard/budget/delete/<int:budget_id>',views.budget_delete, name='budget_delete'),
+    
     path('budget/<int:pk>/view_pdf/', views.view_report, name='view_pdf'),
-    path('budget/<int:pk>/pdf/', views.download_report, name='budget_pdf'),
+    
+    path("budget/<int:pk>/pdf/", views.download_report, name="download_report"),
+
 
     
+
 
 ]

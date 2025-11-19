@@ -322,36 +322,10 @@
 
         {% endif %}
     </div>
+<a href="{% url 'core:download_report' budget.id %}" class="btn btn-primary">
+    Baixar PDF (Profissional)
+</a>
 
 </div>
 
-<button id="btnDownloadPdf" class="btn btn-primary">Baixar PDF</button>
-{% block js_extra%}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
-<script>
 
-    document.getElementById("btnDownloadPdf").addEventListener("click", () => {
-
-        const element = document.getElementById("area-pdf");
-
-        const options = {
-            margin: 5,
-            filename: "orcamento-{{ budget.code }}.pdf",
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: {
-                scale: 2,            // aumenta nitidez
-                useCORS: true
-            },
-            jsPDF: {
-                unit: 'mm',
-                format: 'a4',
-                orientation: 'portrait'
-            }
-        };
-
-        html2pdf().set(options).from(element).save();
-    });
-
-</script>
-
-{% endblock %}

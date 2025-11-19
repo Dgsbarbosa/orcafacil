@@ -2,21 +2,20 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render,redirect
 from django.contrib.auth.decorators import login_required
-from django.template.loader import get_template
+from django.template.loader import get_template, render_to_string
 from accounts.models import Company, UserProfile
 from .models import Budget, Client,Services,Material
 from .forms import ClientForm, BudgetForm, ServiceFormSet,MaterialFormSet
-from xhtml2pdf import pisa
 from .utils import count_budgets_per_month,pass_rate,atualizar_created_budgets
 from django.template.loader import render_to_string
 from django.db.models import Q, Sum
 from django.contrib import messages
 from accounts.forms import UserProfileForm, CompanyForm, LoginForm,CustomUserForm,CustomUserEditForm
 from django.forms import inlineformset_factory
-# from weasyprint import HTML
 
 from .utils import normalize_budget_codes
-
+import asyncio
+from playwright.sync_api import sync_playwright
 @login_required
 def dashboard(request):
     user = request.user
@@ -492,26 +491,54 @@ def view_report(request,pk):
     
 @login_required
 def download_report(request, pk):
-    budget = Budget.objects.get(id=pk)
+    
+    budget = get_object_or_404(Budget, id=pk)
+
     services = budget.services.all()
     materials = budget.materials.all()
 
-    template = get_template('core/report.html')
+    total_services = budget.services.aggregate(total=Sum("subtotal_services"))["total"] or 0
+    total_materials = budget.materials.aggregate(total=Sum("subtotal_material"))["total"] or 0
 
-    html = template.render({
-        'budget': budget,
-        'services': services,
-        'materials': materials,
+    # Renderiza HTML
+    html = render_to_string("core/report.html", {
+        "budget": budget,
+        "services": services,
+        "materials": materials,
+        "total_services": total_services,
+        "total_materials": total_materials,
+        "user": request.user
     })
 
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="orcamento-{budget.code}.pdf"'
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page()
 
-    pisa_status = pisa.CreatePDF(html, dest=response)
+        # Carrega o HTML diretamente
+        page.set_content(html, wait_until="networkidle")
 
-    if pisa_status.err:
-        return HttpResponse('Erro ao gerar PDF', status=500)
+        pdf_bytes = page.pdf(
+            format="A4",
+            margin={"top": "90px", "bottom": "90px", "left": "20px", "right": "20px"},
+            display_header_footer=True,
+            header_template="""
+                <div style="font-size:10px; width:100%; text-align:center;">
+                    {{header}}
+                </div>
+            """.replace("{{header}}", request.user.company.company_name if request.user.userprofile.plan == "pro" else ""),
+            footer_template="""
+                <div style="font-size:9px; width:100%; text-align:center; color:#555;">
+                    {{footer}}
+                </div>
+            """.replace("{{footer}}",
+                         "Facebook: novopadrao.reformas • Instagram: @novopadrao.reformas — Obrigado pela confiança!"
+                         if request.user.userprofile.plan == "pro"
+                         else "<img src='/static/core/images/marca_dagua.png' width='80'>"
+                        ),
+        )
 
+        browser.close()
+
+    response = HttpResponse(pdf_bytes, content_type="application/pdf")
+    response["Content-Disposition"] = f"attachment; filename=orcamento-{budget.code}.pdf"
     return response
-
-
