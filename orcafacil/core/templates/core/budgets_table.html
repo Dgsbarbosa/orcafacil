@@ -23,8 +23,11 @@
       <td>{{ budget.created_at|date:"d/m/Y" }}</td>
       <td>
         <i class="fa-solid fa-pencil edit-budget" data-id="{{ budget.id }}"></i>
-        <i class="fa-solid fa-eye view-budget" data-id="{{ budget.id }}"></i>
+        <a href="{% url 'core:view_pdf' budget.id %}"><i class="fa-solid fa-eye view-budget" ></i></a>
         <i class="fa-solid fa-x delete-budget" data-budget_id="{{ budget.id }}" data-information="{{ budget.code }} - {{ budget.title }}"></i>
+        <a href="{% url 'core:download_report' budget.id%}">
+          <i class="fa-solid fa-download"></i>
+        </a>
       </td>
     </tr>
     {% empty %}

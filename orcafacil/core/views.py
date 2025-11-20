@@ -6,7 +6,7 @@ from django.template.loader import get_template, render_to_string
 from accounts.models import Company, UserProfile
 from .models import Budget, Client,Services,Material
 from .forms import ClientForm, BudgetForm, ServiceFormSet,MaterialFormSet
-from .utils import count_budgets_per_month,pass_rate,atualizar_created_budgets
+from .utils import count_budgets_per_month,pass_rate,atualizar_created_budgets, apply_watermark_footer_header
 from django.template.loader import render_to_string
 from django.db.models import Q, Sum
 from django.contrib import messages
@@ -500,25 +500,31 @@ def download_report(request, pk):
 
     profile = request.user.userprofile
     plan = profile.plan  # "free" ou "pro"
+    marca_dagua_base64 = "data:image/png;base64,AAAA...."
 
     # Escolhe header e footer
     if plan == "pro":
         header_html = f"""
-            <div style="width:100%;font-size:12px;text-align:center;padding-top:6px;">
-                <b>{request.user.company.company_name}</b>
-            </div>
+        <div class="header" style="font-size:12px; text-align:center; width:100%; padding:4px 0;">
+            <b>{request.user.company.company_name}</b>
+        </div>
         """
+
         footer_html = """
-            <div style='font-size:10px; width:100%; text-align:center; border-top:1px solid #ccc; padding-top:6px;'>
-                Facebook: novopadrao.reformas • Instagram: @novopadrao.reformas — Obrigado pela confiança!
-            </div>
+        <div class="footer" style="font-size:10px; text-align:center; width:100%; padding:6px 0;
+            border-top:1px solid #ccc;">
+            Facebook: novopadrao.reformas • Instagram: @novopadrao.reformas — Obrigado pela confiança!
+        </div>
         """
     else:
-        header_html = ""
-        footer_html = """
-            <div style='width:100%;text-align:center;opacity:0.2;'>
-                <img src='/static/core/images/marca_dagua.png' style='width:120px;'>
-            </div>
+        header_html = """
+        <div class="header" style="height:20px;"></div>
+        """
+
+        footer_html = f"""
+        <div class="footer" style="text-align:center; width:100%; padding:10px 0;">
+            <img src="{marca_dagua_base64}" style="width:100px; opacity:0.15;" />
+        </div>
         """
 
     # Renderiza o HTML da página que será convertida
@@ -542,20 +548,19 @@ def download_report(request, pk):
         pdf_bytes = page.pdf(
             format="A4",
             print_background=True,
-            margin={"top": "80px", "bottom": "80px", "left": "10mm", "right": "10mm"},
-            display_header_footer=True,
-            header_template=f"""
-                <style>div {{ font-size: 10px; }}</style>
-                {header_html}
-            """,
-            footer_template=f"""
-                <style>div {{ font-size: 9px; }}</style>
-                {footer_html}
-            """,
+            margin={"top": "20px", "bottom": "20px", "left": "10mm", "right": "10mm"},
+            display_header_footer=False
         )
 
         browser.close()
 
-    response = HttpResponse(pdf_bytes, content_type="application/pdf")
+        final_pdf = apply_watermark_footer_header(
+        pdf_bytes,
+        plan=plan,
+        company_name=request.user.company.company_name
+    )
+
+    response = HttpResponse(final_pdf, content_type="application/pdf")
     response["Content-Disposition"] = f"attachment; filename=orcamento-{budget.code}.pdf"
     return response
+
