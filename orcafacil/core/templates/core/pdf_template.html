@@ -1,0 +1,283 @@
+{% load static %}
+{% load currency %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Orçamento {{ budget.code }}</title>
+
+    <!-- CSS exclusivo para PDF -->
+    <link rel="stylesheet" href="{% static 'core/css/report.css' %}">
+
+    <style>
+        /* ====== ESTILOS INTERNOS ESPECÍFICOS ====== */
+
+        .wrapper {
+            padding: 0;
+            margin: 0;
+            width: 100%;
+        font-family: Helvetica, Arial, sans-serif;
+
+        }
+
+        .content-area {
+            padding: 18mm 10mm 18mm 10mm;
+            /* deixa espaço para header/playwright */
+        }
+
+        /* Título */
+        .title-box {
+            background: #f0f0f0;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .title-sub {
+            color: #777;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Seções */
+        .section-title {
+            margin-top: 18px;
+            padding: 6px 10px;
+            font-weight: bold;
+            background: #efefef;
+            border-radius: 3px;
+            font-size: 16px;
+        }
+
+        /* Dados do cliente */
+        .client-box p {
+            margin: 2px 0;
+            font-size: 13px;
+            padding-left: 10px;
+
+        }
+
+        /* Tabelas */
+        table.custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+            page-break-inside: auto;
+        }
+
+        table.custom-table th {
+            /* background: #eaeaea; */
+            padding: 6px;
+            font-size: 13px;
+            text-align: left;
+        }
+
+        table.custom-table td {
+            padding: 6px;
+            vertical-align: top;
+            font-size: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table.custom-table tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+
+        /* Totais */
+        .resume-box {
+            margin-top: 25px;
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .resume-table {
+            width: 50%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .resume-table td {
+            padding: 6px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .resume-table tr:last-child {
+            font-weight: bold;
+            background: #f0f0f0;
+        }
+
+        /* Observações */
+        .obs-box {
+            margin-top: 20px;
+            font-size: 13px;
+        }
+
+        /* Assinatura */
+        .signature-box {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .signature-line {
+            width: 50%;
+            border-top: 1px solid #000;
+            margin: auto;
+            padding-top: 4px;
+        }
+
+        /* Marca d’água FREE */
+        
+        .watermark {
+            position: fixed;
+            top: 35%;
+            left: 22%;
+            width: 55%;
+            opacity: 0.09;
+            z-index: -1;
+        }
+        
+    </style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    {% if plan == 'free' %}
+    <img class="watermark" src="{% static 'core/images/marca_dagua.png' %}">
+    {% endif %}
+
+    <div class="content-area">
+
+        <!-- TÍTULO -->
+        <div class="title-box">
+            ORÇAMENTO {{ budget.code }}
+            <span class="title-sub"> | {{ budget.title }}</span>
+        </div>
+
+        <!-- CLIENTE -->
+    
+
+        <div class="client-box">
+            <p><strong>{{ budget.client.name }} {{ budget.client.lastname }}</strong></p>
+
+            <p>{{ budget.client.street }}, {{ budget.client.neighborhood }}</p>
+            <p>{{ budget.client.city }} - {{ budget.client.state }} | CEP {{ budget.client.zipcode }}</p>
+
+            <p>Telefone: {{ budget.client.phone }}</p>
+            <p>E-mail: {{ budget.client.email }}</p>
+        </div>
+
+
+        <!-- SERVIÇOS -->
+        <div class="section-title">Serviços</div>
+
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th style="width:38%;">Descrição</th>
+                    <th style="width:15%; text-align:center;">Preço Unit.</th>
+                    <th style="width:12%; text-align:center;">Qtd</th>
+                    <th style="width:15%; text-align:right;">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for s in services %}
+                <tr>
+                    <td>
+                        <strong>{{ s.service|capfirst }}</strong><br>
+                        <span>{{ s.description|linebreaksbr }}</span>
+                    </td>
+                    <td style="text-align:center;">{{ s.unit_price|currency }}</td>
+                    <td style="text-align:center;">{{ s.quantity }}</td>
+                    <td style="text-align:right;">{{ s.subtotal_services|currency }}</td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="2"><strong>Subtotal de Serviços</strong></td>
+                <td colspan="2 " style="text-align: right;"><strong>{{ total_services|currency }}</strong></td>
+            </tr>
+            </tbody>
+        </table>
+
+
+        <!-- MATERIAIS -->
+        <div class="section-title">Materiais</div>
+
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th style="width:38%;">Descrição</th>
+                    <th style="width:12%; text-align:center;">Unidade</th>
+                    <th style="width:15%; text-align:center;">Preço Unit.</th>
+                    <th style="width:10%; text-align:center;">Qtd</th>
+                    <th style="width:15%; text-align:right;">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for m in materials %}
+                <tr>
+                    <td>
+                        <strong>{{ m.name }}</strong><br>
+                        <span>{{ m.description|linebreaksbr }}</span>
+                    </td>
+
+                    <td style="text-align:center;">—</td>
+                    <td style="text-align:center;">{{ m.unit_price|currency }}</td>
+                    <td style="text-align:center;">{{ m.quantity }}</td>
+                    <td style="text-align:right;">{{ m.subtotal_material|currency }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+
+        <!-- TOTAIS -->
+        <div class="resume-box">
+            <table class="resume-table">
+                <tr>
+                    <td>Serviços</td>
+                    <td style="text-align:right;">{{ total_services|currency }}</td>
+                </tr>
+                <tr>
+                    <td>Materiais</td>
+                    <td style="text-align:right;">{{ total_materials|currency }}</td>
+                </tr>
+                <tr>
+                    <td>Total Geral</td>
+                    <td style="text-align:right;">{{ budget.total_value|currency }}</td>
+                </tr>
+            </table>
+        </div>
+
+
+        <!-- OBSERVAÇÕES -->
+        {% if budget.obs %}
+            <div class="section-title">Observações</div>
+            <div class="obs-box">
+                {{ budget.obs|linebreaksbr }}
+            </div>
+        {% endif %}
+
+
+        <!-- ASSINATURA -->
+        <div class="signature-box">
+            <div class="signature-line"></div>
+            <p><strong>{{ user.company.company_name }}</strong></p>
+            <p>{{ user.first_name }} {{ user.last_name }}</p>
+        </div>
+
+        <p style="text-align:center; margin-top:30px; font-size:12px;">
+            {{ budget.created_at|date:"d/m/Y" }}
+        </p>
+
+    </div>
+</div>
+
+</body>
+</html>

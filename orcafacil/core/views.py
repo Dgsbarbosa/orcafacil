@@ -472,10 +472,6 @@ def view_report(request,pk):
 
     # Calcule o total dos materiais
     total_materials = budget.materials.aggregate(total=Sum("subtotal_material"))['total'] or 0
-
-
-    print(total_services)
-    print(total_materials)
     
     context = {
         "budget": budget,
@@ -489,52 +485,73 @@ def view_report(request,pk):
 
     return render(request, "core/report.html", context)
     
+
+
 @login_required
 def download_report(request, pk):
-    
     budget = get_object_or_404(Budget, id=pk)
 
+    # Coleta de dados
     services = budget.services.all()
     materials = budget.materials.all()
 
     total_services = budget.services.aggregate(total=Sum("subtotal_services"))["total"] or 0
     total_materials = budget.materials.aggregate(total=Sum("subtotal_material"))["total"] or 0
 
-    # Renderiza HTML
-    html = render_to_string("core/report.html", {
+    profile = request.user.userprofile
+    plan = profile.plan  # "free" ou "pro"
+
+    # Escolhe header e footer
+    if plan == "pro":
+        header_html = f"""
+            <div style="width:100%;font-size:12px;text-align:center;padding-top:6px;">
+                <b>{request.user.company.company_name}</b>
+            </div>
+        """
+        footer_html = """
+            <div style='font-size:10px; width:100%; text-align:center; border-top:1px solid #ccc; padding-top:6px;'>
+                Facebook: novopadrao.reformas • Instagram: @novopadrao.reformas — Obrigado pela confiança!
+            </div>
+        """
+    else:
+        header_html = ""
+        footer_html = """
+            <div style='width:100%;text-align:center;opacity:0.2;'>
+                <img src='/static/core/images/marca_dagua.png' style='width:120px;'>
+            </div>
+        """
+
+    # Renderiza o HTML da página que será convertida
+    html = render_to_string("core/pdf_template.html", {
         "budget": budget,
         "services": services,
         "materials": materials,
         "total_services": total_services,
         "total_materials": total_materials,
-        "user": request.user
+        "plan": plan,
+        "user": request.user,
     })
 
+    # Playwright
     with sync_playwright() as p:
         browser = p.chromium.launch()
         page = browser.new_page()
 
-        # Carrega o HTML diretamente
         page.set_content(html, wait_until="networkidle")
 
         pdf_bytes = page.pdf(
             format="A4",
-            margin={"top": "90px", "bottom": "90px", "left": "20px", "right": "20px"},
+            print_background=True,
+            margin={"top": "80px", "bottom": "80px", "left": "10mm", "right": "10mm"},
             display_header_footer=True,
-            header_template="""
-                <div style="font-size:10px; width:100%; text-align:center;">
-                    {{header}}
-                </div>
-            """.replace("{{header}}", request.user.company.company_name if request.user.userprofile.plan == "pro" else ""),
-            footer_template="""
-                <div style="font-size:9px; width:100%; text-align:center; color:#555;">
-                    {{footer}}
-                </div>
-            """.replace("{{footer}}",
-                         "Facebook: novopadrao.reformas • Instagram: @novopadrao.reformas — Obrigado pela confiança!"
-                         if request.user.userprofile.plan == "pro"
-                         else "<img src='/static/core/images/marca_dagua.png' width='80'>"
-                        ),
+            header_template=f"""
+                <style>div {{ font-size: 10px; }}</style>
+                {header_html}
+            """,
+            footer_template=f"""
+                <style>div {{ font-size: 9px; }}</style>
+                {footer_html}
+            """,
         )
 
         browser.close()
