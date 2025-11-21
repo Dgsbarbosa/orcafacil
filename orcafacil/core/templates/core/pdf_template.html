@@ -12,7 +12,13 @@
 
     <style>
         /* ====== ESTILOS INTERNOS ESPECÍFICOS ====== */
-
+@page {
+    size: A4;
+    margin-top: 80px;
+    /* altura do header */
+    margin-bottom: 120px;
+    /* altura do footer */
+}
         .wrapper {
             padding: 0;
             margin: 0;
@@ -183,7 +189,7 @@
                     <th style="width:38%;">Descrição</th>
                     <th style="width:15%; text-align:center;">Preço Unit.</th>
                     <th style="width:12%; text-align:center;">Qtd</th>
-                    <th style="width:15%; text-align:right;">Subtotal</th>
+                    <th style="width:15%; text-align:right;">Valor</th>
                 </tr>
             </thead>
             <tbody>
@@ -216,7 +222,7 @@
                     <th style="width:12%; text-align:center;">Unidade</th>
                     <th style="width:15%; text-align:center;">Preço Unit.</th>
                     <th style="width:10%; text-align:center;">Qtd</th>
-                    <th style="width:15%; text-align:right;">Subtotal</th>
+                    <th style="width:15%; text-align:right;">Valor</th>
                 </tr>
             </thead>
             <tbody>
@@ -233,6 +239,11 @@
                     <td style="text-align:right;">{{ m.subtotal_material|currency }}</td>
                 </tr>
             {% endfor %}
+
+            <tr>
+                <td colspan="2"><strong>Subtotal de Materiais</strong></td>
+                <td colspan="3 " style="text-align: right;"><strong>{{ total_materials|currency }}</strong></td>
+            </tr>
             </tbody>
         </table>
 

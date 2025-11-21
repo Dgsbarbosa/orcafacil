@@ -1,142 +1,146 @@
+/* ===== RESET PARA XHTML2PDF ===== */
+/* Ele cria bordas automáticas → zeramos todas */
 
-    /* ===== RESET PARA XHTML2PDF ===== */
-    /* Ele cria bordas automáticas → zeramos todas */
-    
 
-    /* Remove bordas involuntárias no container */
-    .view-print {
-        border: none !important;
-        padding: 20px;
-        font-family: Helvetica, Arial, sans-serif;
-        font-size: 12px;
-        color: #000;
-    }
+/* Remove bordas involuntárias no container */
+.view-print {
+    border: none !important;
+    padding: 20px;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    color: #000;
+}
 
-    .view-print table{
+.view-print table {}
 
-    }
+.company-header {
+    text-align: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border: none !important;
+}
 
-    .company-header {
-        text-align: center;
-        margin-bottom: 15px;
-        padding-bottom: 10px;
-        border: none !important;
-    }
+.company-header h1 {
+    font-size: 18px;
+    margin: 0;
+    padding: 0;
+}
 
-    .company-header h1 {
-        font-size: 18px;
-        margin: 0;
-        padding: 0;
-    }
+.budget-title,
+.budget-title-span {
+    /* border: 1px solid black; */
+    display: flex;
+    align-items: center;
+    background: #eee;
+    height: 40px;
+    padding-left: 10px;
 
-    .budget-title,
-    .budget-title-span {
-        /* border: 1px solid black; */
-        display: flex;
-        align-items: center;
-        background: #eee;
-        height: 40px;
-        padding-left: 10px;
+}
 
-    }
+.budget-title-span {
 
-    .budget-title-span {
+    color: #6b6b6b;
+    font-size: 15px;
 
-        color: #6b6b6b;
-        font-size: 15px;
+}
 
-    }
+.datas-client p {
+    /* border: 1px solid #000 !important; */
+    margin-bottom: 2px;
+    margin-top: 6px;
+    font-size: 18px;
 
-    .datas-client p {
-        /* border: 1px solid #000 !important; */
-        margin-bottom: 2px;
-        margin-top: 6px;
-        font-size: 18px;
+}
 
-    }
+/* Caixa de seção */
+.section-title {
+    background: #eee;
+    /* border: 1px solid #000 !important; */
+    padding: 6px;
+    font-weight: bolder;
+    margin-top: 22px;
+    margin-bottom: 5px;
+    font-size: 18px;
+}
 
-    /* Caixa de seção */
-    .section-title {
-        background: #eee;
-        /* border: 1px solid #000 !important; */
-        padding: 6px;
-        font-weight: bolder;
-        margin-top: 22px;
-        margin-bottom: 5px;
-        font-size: 18px;
-    }
+/* Tabelas principais */
+table.print-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 5px;
+}
 
-    /* Tabelas principais */
-    table.print-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 5px;
-    }
+/* Agora aplicamos borda SOMENTE onde queremos */
+table.print-table th,
+table.print-table td {
+    /* border: 1px solid #000 !important; */
+    padding: 5px;
+    vertical-align: top;
+}
 
-    /* Agora aplicamos borda SOMENTE onde queremos */
-    table.print-table th,
-    table.print-table td {
-        /* border: 1px solid #000 !important; */
-        padding: 5px;
-        vertical-align: top;
-    }
 .print-table td:first-child {
     white-space: normal !important;
     word-wrap: break-word !important;
     overflow-wrap: break-word !important;
-    max-width: 250px; /* opcional: limite de largura */
+    max-width: 250px;
+    /* opcional: limite de largura */
 }
 
-    .print-table tr td {
-        /* background: #f2f2f2; */
+.print-table tr td {
+    /* background: #f2f2f2; */
 
-        border-bottom: 1px solid #6b6b6b;
-    }
+    border-bottom: 1px solid #6b6b6b;
+}
 
-    .resume-values,
-    .resume-values p {
-        /* border: 1px solid rgb(255, 0, 0); */
-        display: flex;
-        justify-content: right;
-        margin-top: 20px;
-    }
+.resume-values,
+.resume-values p {
+    /* border: 1px solid rgb(255, 0, 0); */
+    display: flex;
+    justify-content: right;
+    margin-top: 20px;
+}
 
-    .resume-values table{
-        /* border: 1px solid rgb(88, 236, 2); */
-        width: 60%;
-        border-collapse: collapse;
-        
-
-    }
-    .resume-values tr {
-        /* border: 1px solid black; */
-        background-color:#eee;
-        
-    }
-    .resume-values tr:last-child {
-        /* border: 1px solid black; */
-        background-color:#dadada;
-        font-weight: bolder;
-        
-    }
-    .resume-values td {
-        /* border: 1px solid black; */
-        padding: 5px;
-    }
-    .resume-values td:nth-child(2){
-        /* border: 1px solid rgb(17, 52, 255); */
-        width: 100px;
-        text-align:right;
-
-        
-    }
+.resume-values table {
+    /* border: 1px solid rgb(88, 236, 2); */
+    width: 60%;
+    border-collapse: collapse;
 
 
+}
 
-    .footer {
-        margin-top: 30px;
-        text-align: center;
-        font-size: 11px;
-        border-top: 1px solid #000 !important;
-        padding-top: 10px;
-    }
+.resume-values tr {
+    /* border: 1px solid black; */
+    background-color: #eee;
+
+}
+
+.resume-values tr:last-child {
+    /* border: 1px solid black; */
+    background-color: #dadada;
+    font-weight: bolder;
+
+}
+
+.resume-values td {
+    /* border: 1px solid black; */
+    padding: 5px;
+}
+
+.resume-values td:nth-child(2) {
+    /* border: 1px solid rgb(17, 52, 255); */
+    width: 100px;
+    text-align: right;
+
+
+}
+
+
+
+.footer {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 11px;
+    border-top: 1px solid #000 !important;
+    padding-top: 10px;
+}
+

@@ -561,6 +561,6 @@ def download_report(request, pk):
     )
 
     response = HttpResponse(final_pdf, content_type="application/pdf")
-    response["Content-Disposition"] = f"attachment; filename=orcamento-{budget.code}.pdf"
+    response["Content-Disposition"] = f"attachment; filename=Orcamento-{budget.code}.pdf"
     return response
 

@@ -87,6 +87,10 @@
             <td style="text-align: right;">{{ s.subtotal_services|currency }}</td>
         </tr>
         {% endfor %}
+         <tr>
+                <td colspan="2"><strong>Subtotal de Serviços</strong></td>
+                <td colspan="3 " style="text-align: right;"><strong>{{ total_services|currency }}</strong></td>
+            </tr>
     </table>
 
 
@@ -117,6 +121,10 @@
             <td style="text-align: right;">{{ m.subtotal_material|currency }}</td>
         </tr>
         {% endfor %}
+         <tr >
+                <td colspan="2"><strong>Subtotal de Materiais</strong></td>
+                <td colspan="3 " style="text-align: right;"><strong>{{ total_materials|currency }}</strong></td>
+            </tr>
     </table>
 
 

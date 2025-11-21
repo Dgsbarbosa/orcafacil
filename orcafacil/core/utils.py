@@ -37,6 +37,7 @@ def apply_watermark_footer_header(original_pdf_bytes, plan, company_name):
     height_mark = 90
     position_header = height - 100
     position_footer = 10
+    
     empresa = "Novo Padrão Reforma e Manutenção Predial"
     cnpj = "CNPJ 37.763.872/0001-11"
     tel1 = "+55 (14) 99734-9757"
@@ -47,6 +48,7 @@ def apply_watermark_footer_header(original_pdf_bytes, plan, company_name):
     # Ícones
     facebook_icon = "core/static/core/images/facebook.png"
     whatsapp_icon = "core/static/core/images/whatsapp.png"
+    email_icon = "core/static/core/images/email.png"
 
     for page_num in range(len(reader.pages)):
         packet = io.BytesIO()
@@ -86,6 +88,7 @@ def apply_watermark_footer_header(original_pdf_bytes, plan, company_name):
                 )
             except:
                 pass
+       
         # =======================
         # FOOTER (PRO / FREE)
         # =======================
@@ -117,16 +120,22 @@ def apply_watermark_footer_header(original_pdf_bytes, plan, company_name):
             except:
                 can.drawString(25, y - 30, tel1)
                 can.drawString(25, y - 44, tel2)
-
-            can.drawString(25, y - 58, email)
-
+            
+           
             # Facebook ícone + link
             try:
-                can.drawImage(ImageReader(facebook_icon), 250, y - 32, width=10, height=10, mask="auto")
-                can.drawString(265, y - 30, facebook)
+                can.drawImage(ImageReader(facebook_icon), 250, y-12, width=10, height=10, mask="auto")
+                can.drawString(265, y -12 , facebook)
             except:
                 can.drawString(250, y - 30, facebook)
-        
+
+             # email
+            try:
+                can.drawImage(ImageReader(email_icon),250,y-44,width=10,height=10)
+                can.drawString(265, y - 44, email)
+
+            except:
+                can.drawString(245, y - 44, email)
         # =======================
         # Footer FREE
         # =======================
@@ -156,6 +165,7 @@ def apply_watermark_footer_header(original_pdf_bytes, plan, company_name):
 
         overlay = PdfReader(packet)
         page = reader.pages[page_num]
+        
         page.merge_page(overlay.pages[0])
 
         writer.add_page(page)
